@@ -41,7 +41,6 @@ public class JsonUtils {
             strings.add(elem);
         }
 
-        System.out.println(strings);
         return strings;
     }
 }

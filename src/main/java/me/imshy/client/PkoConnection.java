@@ -28,7 +28,6 @@ public class PkoConnection implements BankConnection, Closeable {
     private String token;
 
 
-
     public PkoConnection(LoginCredentials loginCredentials) {
         httpClient = new HttpClient();
 
@@ -41,26 +40,16 @@ public class PkoConnection implements BankConnection, Closeable {
             PostRequest loginRequest = new PostRequest(loginUrl, loginRequestBody);
 
             CloseableHttpResponse loginResponse = httpClient.sendRequest(loginRequest);
-            System.out.println(loginResponse.getCode());
             String loginResponseJson = EntityUtils.toString(loginResponse.getEntity());
-            System.out.println(loginResponseJson);
 
             sessionId = loginResponse.getFirstHeader("X-Session-Id").getValue();
             flowId = JsonUtils.getValueFromJson("flow_id", loginResponseJson).replace("\"", "");
             token = JsonUtils.getValueFromJson("token", loginResponseJson).replace("\"", "");
 
-
             RequestBody passwordRequestBody = new PasswordRequestBody(loginCredentials.getPassword(), token, flowId);
             PostRequest passwordRequest = new SessionPostRequest(loginUrl, passwordRequestBody, sessionId);
 
-            System.out.println("Password request body");
-            System.out.println(JsonUtils.getJson(passwordRequestBody));
-
             CloseableHttpResponse passwordResponse = httpClient.sendRequest(passwordRequest);
-            System.out.println(passwordResponse.getCode());
-
-            String passwordResponseJson = EntityUtils.toString(passwordResponse.getEntity());
-            System.out.println(passwordResponseJson);
 
 
         } catch (IOException | ParseException e) {
@@ -74,14 +63,9 @@ public class PkoConnection implements BankConnection, Closeable {
             RequestBody initRequestBody = new InitRequestBody();
             PostRequest initRequest = new SessionPostRequest(initUrl, initRequestBody, sessionId);
 
-            System.out.println("TU");
-            System.out.println(EntityUtils.toString(initRequest.getHttpPost().getEntity()));
-
             CloseableHttpResponse initResponse = httpClient.sendRequest(initRequest);
-            System.out.println(initResponse.getCode());
 
             String initResponseJson = EntityUtils.toString(initResponse.getEntity());
-            System.out.println(initResponseJson);
 
             return parseAccountBalances(initResponseJson);
 
