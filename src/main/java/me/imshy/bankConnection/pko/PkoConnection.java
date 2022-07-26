@@ -39,11 +39,10 @@ public class PkoConnection extends BankConnection {
             executeLoginRequest(loginCredentials.getLogin());
             executePasswordRequest(loginCredentials.getPassword());
 
-            return;
         } catch (IOException | ParseException e) {
             LOGGER.error(e.getLocalizedMessage());
+            throw new UnsuccessfulSignInException("Unsuccessful Sign In");
         }
-        throw new UnsuccessfulSignInException("Unsuccessful Sign In");
     }
 
     @Override
@@ -54,20 +53,18 @@ public class PkoConnection extends BankConnection {
             return ResponseParserUtils.parseAccountBalances(initResponse.getResponseJson());
         } catch (ParseException | IOException | RequestErrorException e) {
             LOGGER.error(e.getLocalizedMessage());
+            throw new RequestErrorException("Bad initRequest");
         }
-        throw new RequestErrorException("Bad initRequest");
     }
 
     @Override
     public void logout() throws RequestErrorException {
         try {
             executeLogoutRequest();
-
-            return;
         } catch (IOException | ParseException e) {
             LOGGER.error(e.getLocalizedMessage());
+            throw new RequestErrorException("Bad logoutRequest");
         }
-        throw new RequestErrorException("Bad logoutRequest");
     }
 
     private RequestResponse executeLoginRequest(String login) throws RequestErrorException, IOException, ParseException {

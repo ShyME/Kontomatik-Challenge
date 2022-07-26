@@ -32,14 +32,13 @@ class PkoConnectionTest {
 
     @Test
     @Order(1)
-    void loginShouldSuccess() throws RequestErrorException {
+    void whenGoodCredentials_login_shouldSuccess() throws RequestErrorException {
         pkoConnection.login(loginCredentials);
-
     }
 
     @Test
     @Order(2)
-    void getAccountBalances() throws RequestErrorException {
+    void whenLoggedIn_getAccountBalances_shouldSuccess() throws RequestErrorException {
         List<AccountBalance> accountBalanceList = pkoConnection.getAccountBalances();
         LOGGER.info("Accounts: " + accountBalanceList);
         assertThat(accountBalanceList.size()).isGreaterThan(0);
@@ -47,26 +46,16 @@ class PkoConnectionTest {
 
     @Test
     @Order(3)
-    void logout() throws RequestErrorException {
+    void whenLoggedIn_logout_shouldSuccess() throws RequestErrorException {
         pkoConnection.logout();
     }
 
     @Test
     @Order(4)
-    void loginShouldFailBadPassword() {
+    void whenBadPassword_login_shouldThrowUnsuccessfulSignInException() {
         ReflectionTestUtils.setField(loginCredentials, "password", "badPassword");
         assertThatThrownBy(() -> {
             pkoConnection.login(loginCredentials);
         }).isInstanceOf(UnsuccessfulSignInException.class);
-    }
-
-    @Test
-    @Order(5)
-    void loginShouldFailBadLogin() {
-        ReflectionTestUtils.setField(loginCredentials, "login", "badLogin");
-        assertThatThrownBy(() -> {
-            pkoConnection.login(loginCredentials);
-        }).isInstanceOf(UnsuccessfulSignInException.class);
-
     }
 }
