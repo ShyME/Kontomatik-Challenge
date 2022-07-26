@@ -16,19 +16,16 @@ public abstract class BankConnection implements Closeable {
 
     protected final IHttpClient httpClient;
 
-    protected BankConnection(LoginCredentials loginCredentials) throws RequestErrorException {
+    protected BankConnection() {
         httpClient = new HttpClient();
-        login(loginCredentials);
     }
 
     public abstract List<AccountBalance> getAccountBalances() throws RequestErrorException;
     public abstract void login(LoginCredentials loginCredentials) throws RequestErrorException;
     public abstract void logout() throws RequestErrorException;
 
-    @SneakyThrows(RequestErrorException.class)
     @Override
     public void close() throws IOException {
-        logout();
         httpClient.close();
     }
 }
