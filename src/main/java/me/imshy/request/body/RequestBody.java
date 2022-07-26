@@ -1,8 +1,6 @@
 package me.imshy.request.body;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
-import me.imshy.util.JsonUtils;
 
 import java.util.HashMap;
 import java.util.Map;

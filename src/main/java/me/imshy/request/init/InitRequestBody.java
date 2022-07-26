@@ -1,4 +1,6 @@
-package me.imshy.request.body;
+package me.imshy.request.init;
+
+import me.imshy.request.body.RequestBody;
 
 import java.util.HashMap;
 import java.util.Map;

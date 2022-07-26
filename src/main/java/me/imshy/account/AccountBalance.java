@@ -1,11 +1,11 @@
 package me.imshy.account;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
-@Builder
+@AllArgsConstructor
 @Getter
 public class AccountBalance {
     private String accountId;

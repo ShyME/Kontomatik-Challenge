@@ -1,6 +1,5 @@
 package me.imshy.client;
 
-import me.imshy.Main;
 import me.imshy.request.PostRequest;
 import me.imshy.request.RequestResponse;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;

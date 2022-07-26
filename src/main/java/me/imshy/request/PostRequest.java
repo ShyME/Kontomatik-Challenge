@@ -10,7 +10,7 @@ import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
-public class PostRequest {
+public abstract class PostRequest {
 
     @Getter
     private final HttpPost httpPost;

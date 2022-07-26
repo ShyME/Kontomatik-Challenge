@@ -1,6 +1,7 @@
-package me.imshy.request.body;
+package me.imshy.request.password;
 
 import lombok.Getter;
+import me.imshy.request.body.SignInRequestBody;
 
 @Getter
 public class PasswordRequestBody extends SignInRequestBody {

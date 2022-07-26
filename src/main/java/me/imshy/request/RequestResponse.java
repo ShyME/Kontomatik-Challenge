@@ -32,6 +32,10 @@ public class RequestResponse {
         if(getResponse().getCode() >= 400) {
             return false;
         }
+        return containsErrors();
+    }
+
+    public boolean containsErrors() {
         try {
             String errors = JsonUtils.getNestedValueFromJson(new String[]{"response", "fields", "errors"}, responseJson);
             return errors == null;
