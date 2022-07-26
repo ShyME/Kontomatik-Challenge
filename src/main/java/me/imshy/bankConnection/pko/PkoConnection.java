@@ -1,6 +1,5 @@
 package me.imshy.bankConnection.pko;
 
-import lombok.SneakyThrows;
 import me.imshy.bankConnection.BankConnection;
 import me.imshy.bankConnection.pko.util.ResponseParserUtils;
 import me.imshy.exception.RequestErrorException;
@@ -45,22 +44,50 @@ public class PkoConnection extends BankConnection {
         throw new UnsuccessfulSignInException("Unsuccessful Sign In");
     }
 
-    @SneakyThrows
     @Override
-    public void logout() {
-        executeLogoutRequest();
+    public List<AccountBalance> getAccountBalances() throws RequestErrorException {
+        try {
+            RequestResponse initResponse = executeInitRequest();
+
+            return ResponseParserUtils.parseAccountBalances(initResponse.getResponseJson());
+        } catch (ParseException | IOException | RequestErrorException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+        throw new RequestErrorException("Bad initRequest");
+    }
+
+    @Override
+    public void logout() throws RequestErrorException {
+        try {
+            executeLogoutRequest();
+
+            return;
+        } catch (IOException | ParseException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+        throw new RequestErrorException("Bad logoutRequest");
     }
 
     private RequestResponse executeLoginRequest(String login) throws RequestErrorException, IOException, ParseException {
         PostRequest loginRequest = new LoginRequest(LOGIN_URL, login);
         RequestResponse loginResponse = httpClient.sendRequest(loginRequest);
         if(!loginResponse.isSuccessful()) {
-            throw new UnsuccessfulSignInException("Bad sign in credentials");
+            throw new UnsuccessfulSignInException("Unsuccessful Sign In");
         }
 
         sessionAttributes = ResponseParserUtils.parseSessionAttributes(loginResponse);
 
         return loginResponse;
+    }
+
+    private RequestResponse executePasswordRequest(String password) throws IOException, ParseException, RequestErrorException {
+        PostRequest passwordRequest = new PasswordRequest(LOGIN_URL, password, sessionAttributes);
+        RequestResponse passwordResponse = httpClient.sendRequest(passwordRequest);
+        if(!passwordResponse.isSuccessful()) {
+            throw new UnsuccessfulSignInException("Unsuccessful Sign In");
+        }
+
+        return passwordResponse;
     }
 
     private RequestResponse executeLogoutRequest() throws IOException, ParseException, RequestErrorException {
@@ -74,16 +101,6 @@ public class PkoConnection extends BankConnection {
         return logoutResponse;
     }
 
-    private RequestResponse executePasswordRequest(String password) throws IOException, ParseException, RequestErrorException {
-        PostRequest passwordRequest = new PasswordRequest(LOGIN_URL, password, sessionAttributes);
-        RequestResponse passwordResponse = httpClient.sendRequest(passwordRequest);
-        if(!passwordResponse.isSuccessful()) {
-            throw new UnsuccessfulSignInException("Bad sign in credentials");
-        }
-
-        return passwordResponse;
-    }
-
     private RequestResponse executeInitRequest() throws IOException, ParseException, RequestErrorException {
         PostRequest initRequest = new InitRequest(INIT_URL, sessionAttributes.getSessionId());
         RequestResponse initResponse = httpClient.sendRequest(initRequest);
@@ -93,17 +110,5 @@ public class PkoConnection extends BankConnection {
         }
 
         return initResponse;
-    }
-
-    @Override
-    public List<AccountBalance> getAccountBalances() throws RequestErrorException {
-        try {
-            RequestResponse initResponse = executeInitRequest();
-
-            return ResponseParserUtils.parseAccountBalances(initResponse.getResponseJson());
-        } catch (ParseException | IOException | RequestErrorException e) {
-            LOGGER.error(e.getLocalizedMessage());
-        }
-        throw new RequestErrorException("Bad initRequest");
     }
 }

@@ -1,5 +1,6 @@
 package me.imshy.client;
 
+import lombok.SneakyThrows;
 import me.imshy.request.PostRequest;
 import me.imshy.request.RequestResponse;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -12,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.Closeable;
 import java.io.IOException;
 
-public class HttpClient implements Closeable {
+public class HttpClient implements Closeable, IHttpClient {
     private static final Logger LOGGER = LogManager.getLogger(HttpClient.class);
 
     private final CloseableHttpClient client;
@@ -23,7 +24,8 @@ public class HttpClient implements Closeable {
                 .build();
     }
 
-    public RequestResponse sendRequest(PostRequest postRequest) throws IOException, ParseException {
+    @SneakyThrows
+    public RequestResponse sendRequest(PostRequest postRequest) {
         LOGGER.debug("Sending Request: " + postRequest);
         CloseableHttpResponse response = client.execute(postRequest.getHttpPost());
 
