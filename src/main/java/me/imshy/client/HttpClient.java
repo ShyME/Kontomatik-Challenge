@@ -2,9 +2,11 @@ package me.imshy.client;
 
 import me.imshy.Main;
 import me.imshy.request.PostRequest;
+import me.imshy.request.RequestResponse;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,12 +24,14 @@ public class HttpClient implements Closeable {
                 .build();
     }
 
-    public CloseableHttpResponse sendRequest(PostRequest postRequest) throws IOException {
-        LOGGER.debug("Sending Request: " + postRequest.toString());
+    public RequestResponse sendRequest(PostRequest postRequest) throws IOException, ParseException {
+        LOGGER.debug("Sending Request: " + postRequest);
         CloseableHttpResponse response = client.execute(postRequest.getHttpPost());
-        LOGGER.debug("Got Response: " + response.toString());
 
-        return response;
+        RequestResponse requestResponse = new RequestResponse(response);
+        LOGGER.debug("Got Response: " + requestResponse);
+
+        return requestResponse;
     }
 
     @Override
