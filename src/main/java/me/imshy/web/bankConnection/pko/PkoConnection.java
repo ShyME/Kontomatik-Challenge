@@ -2,6 +2,7 @@ package me.imshy.web.bankConnection.pko;
 
 import me.imshy.util.JsonUtils;
 import me.imshy.web.bankConnection.BankConnection;
+import me.imshy.web.bankConnection.pko.util.RequestCreator;
 import me.imshy.web.bankConnection.pko.util.ResponseParserUtils;
 import me.imshy.exception.RequestErrorException;
 import me.imshy.exception.UnsuccessfulSignInException;
@@ -10,12 +11,7 @@ import me.imshy.accountDetails.AccountBalance;
 import me.imshy.web.client.IHttpClient;
 import me.imshy.web.request.PostRequest;
 import me.imshy.web.request.RequestResponse;
-import me.imshy.web.bankConnection.pko.request.body.InitRequestBody;
-import me.imshy.web.bankConnection.pko.request.body.LoginRequestBody;
-import me.imshy.web.bankConnection.pko.request.body.LogoutRequestBody;
-import me.imshy.web.bankConnection.pko.request.body.PasswordRequestBody;
 import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -74,9 +70,7 @@ public class PkoConnection implements BankConnection {
     }
 
     private RequestResponse executeLoginRequest(String login) throws UnsuccessfulSignInException, IOException, ParseException {
-        PostRequest loginRequest = new PostRequest.PostRequestBuilder(LOGIN_URL)
-                .requestBody(new StringEntity(JsonUtils.getJson(new LoginRequestBody(login))))
-                .build();
+        PostRequest loginRequest = RequestCreator.getLoginRequest(LOGIN_URL, login);
         RequestResponse loginResponse = httpClient.sendRequest(loginRequest);
         if(!loginResponse.isSuccessful()) {
             throw new UnsuccessfulSignInException("Unsuccessful Sign In");
@@ -88,10 +82,7 @@ public class PkoConnection implements BankConnection {
     }
 
     private RequestResponse executePasswordRequest(String password) throws IOException, ParseException, UnsuccessfulSignInException {
-        PostRequest passwordRequest = new PostRequest.PostRequestBuilder(LOGIN_URL)
-                .requestBody(new StringEntity(JsonUtils.getJson(new PasswordRequestBody(password, sessionAttributes))))
-                .addHeader("x-session-id", sessionAttributes.getSessionId())
-                .build();
+        PostRequest passwordRequest = RequestCreator.getPasswordRequest(LOGIN_URL, password, sessionAttributes);
         RequestResponse passwordResponse = httpClient.sendRequest(passwordRequest);
         if(!passwordResponse.isSuccessful()) {
             throw new UnsuccessfulSignInException("Unsuccessful Sign In");
@@ -101,10 +92,7 @@ public class PkoConnection implements BankConnection {
     }
 
     private RequestResponse executeLogoutRequest() throws IOException, ParseException, RequestErrorException {
-        PostRequest logoutRequest = new PostRequest.PostRequestBuilder(LOGOUT_URL)
-                .requestBody(new StringEntity(JsonUtils.getJson(new LogoutRequestBody())))
-                .addHeader("x-session-id", sessionAttributes.getSessionId())
-                .build();
+        PostRequest logoutRequest = RequestCreator.getLogoutRequest(LOGOUT_URL, sessionAttributes.getSessionId());
         RequestResponse logoutResponse = httpClient.sendRequest(logoutRequest);
 
         if(!logoutResponse.isSuccessful()) {
@@ -115,10 +103,7 @@ public class PkoConnection implements BankConnection {
     }
 
     private RequestResponse executeInitRequest() throws IOException, ParseException, RequestErrorException {
-        PostRequest initRequest = new PostRequest.PostRequestBuilder(INIT_URL)
-                .requestBody(new StringEntity(JsonUtils.getJson(new InitRequestBody())))
-                .addHeader("x-session-id", sessionAttributes.getSessionId())
-                .build();
+        PostRequest initRequest = RequestCreator.getInitRequest(INIT_URL, sessionAttributes.getSessionId());
         RequestResponse initResponse = httpClient.sendRequest(initRequest);
 
         if(!initResponse.isSuccessful()) {

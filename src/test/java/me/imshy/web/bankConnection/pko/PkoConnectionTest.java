@@ -5,10 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import me.imshy.accountDetails.AccountBalance;
 import me.imshy.exception.RequestErrorException;
-import me.imshy.exception.UnsuccessfulSignInException;
 import me.imshy.accountDetails.LoginCredentials;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
