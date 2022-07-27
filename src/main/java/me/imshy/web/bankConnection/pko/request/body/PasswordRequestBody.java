@@ -1,4 +1,4 @@
-package me.imshy.web.request.body;
+package me.imshy.web.bankConnection.pko.request.body;
 
 import lombok.Getter;
 import me.imshy.web.bankConnection.pko.SessionAttributes;

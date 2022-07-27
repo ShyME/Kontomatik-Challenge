@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -14,7 +15,12 @@ public class JsonUtils {
 
     public static String getValueFromJson(String key, String json) throws JsonProcessingException {
         JsonNode root = objectMapper.readTree(json);
-        return root.findValue(key).toString();
+        JsonNode foundValue = root.findValue(key);
+        if(foundValue == null) {
+            return null;
+        } else {
+            return foundValue.toString();
+        }
     }
 
     public static String getJson(Object requestBody) throws JsonProcessingException {

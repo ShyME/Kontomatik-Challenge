@@ -10,10 +10,10 @@ import me.imshy.accountDetails.AccountBalance;
 import me.imshy.web.client.IHttpClient;
 import me.imshy.web.request.PostRequest;
 import me.imshy.web.request.RequestResponse;
-import me.imshy.web.request.body.InitRequestBody;
-import me.imshy.web.request.body.LoginRequestBody;
-import me.imshy.web.request.body.LogoutRequestBody;
-import me.imshy.web.request.body.PasswordRequestBody;
+import me.imshy.web.bankConnection.pko.request.body.InitRequestBody;
+import me.imshy.web.bankConnection.pko.request.body.LoginRequestBody;
+import me.imshy.web.bankConnection.pko.request.body.LogoutRequestBody;
+import me.imshy.web.bankConnection.pko.request.body.PasswordRequestBody;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.logging.log4j.LogManager;
@@ -32,10 +32,13 @@ public class PkoConnection implements BankConnection {
     private final String LOGOUT_URL ="https://www.ipko.pl/ipko3/logout";
 
     private final IHttpClient httpClient;
+    private final ResponseParserUtils responseParserUtils;
+
     private SessionAttributes sessionAttributes;
 
-    public PkoConnection(IHttpClient httpClient) {
+    public PkoConnection(IHttpClient httpClient, ResponseParserUtils responseParserUtils) {
         this.httpClient = httpClient;
+        this.responseParserUtils = responseParserUtils;
     }
 
     @Override
@@ -54,7 +57,7 @@ public class PkoConnection implements BankConnection {
         try {
             RequestResponse initResponse = executeInitRequest();
 
-            return ResponseParserUtils.parseAccountBalances(initResponse.getResponseJson());
+            return responseParserUtils.parseAccountBalances(initResponse.getResponseJson());
         } catch (ParseException | IOException | RequestErrorException e) {
             LOGGER.error(e.getMessage());
             return null;
@@ -79,7 +82,7 @@ public class PkoConnection implements BankConnection {
             throw new UnsuccessfulSignInException("Unsuccessful Sign In");
         }
 
-        sessionAttributes = ResponseParserUtils.parseSessionAttributes(loginResponse);
+        sessionAttributes = responseParserUtils.parseSessionAttributes(loginResponse);
 
         return loginResponse;
     }

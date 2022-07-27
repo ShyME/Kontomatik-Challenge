@@ -8,16 +8,18 @@ import me.imshy.web.request.RequestResponse;
 import me.imshy.util.JsonUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class ResponseParserUtils {
     private static final Logger LOGGER = LogManager.getLogger(ResponseParserUtils.class);
 
-    public static SessionAttributes parseSessionAttributes(RequestResponse loginResponse) throws UnsuccessfulSignInException, JsonProcessingException {
+    public SessionAttributes parseSessionAttributes(RequestResponse loginResponse) throws UnsuccessfulSignInException, JsonProcessingException {
         Optional<String> sessionIdOptional = loginResponse.getHeaderValue("X-Session-Id");
         if(sessionIdOptional.isEmpty()) {
             throw new UnsuccessfulSignInException("Response lacks session id");
@@ -34,7 +36,7 @@ public class ResponseParserUtils {
         );
     }
 
-    public static List<AccountBalance> parseAccountBalances(String initResponseJson) {
+    public List<AccountBalance> parseAccountBalances(String initResponseJson) {
         List<AccountBalance> accountBalances = new ArrayList<>(1);
 
         try {
@@ -56,7 +58,8 @@ public class ResponseParserUtils {
                 accountBalances.add(accountBalance);
             }
         } catch (JsonProcessingException e) {
-            LOGGER.error(e.getLocalizedMessage());
+            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
 
         return accountBalances;
