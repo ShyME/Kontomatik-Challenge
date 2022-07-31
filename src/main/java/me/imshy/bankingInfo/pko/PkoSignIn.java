@@ -3,6 +3,7 @@ package me.imshy.bankingInfo.pko;
 import me.imshy.bankingInfo.general.accountDetails.LoginCredentials;
 import me.imshy.bankingInfo.general.exception.UnsuccessfulSignIn;
 import me.imshy.bankingInfo.general.http.client.HttpClient;
+import me.imshy.bankingInfo.general.http.client.IHttpClient;
 import me.imshy.bankingInfo.general.http.request.PostRequest;
 import me.imshy.bankingInfo.general.http.request.RequestResponse;
 import me.imshy.bankingInfo.pko.util.RequestCreator;
@@ -12,7 +13,7 @@ public class PkoSignIn {
 
   private final String LOGIN_URL = "https://www.ipko.pl/ipko3/login";
 
-  private final HttpClient httpClient;
+  private final IHttpClient httpClient;
 
   private SessionAttributes sessionAttributes;
 

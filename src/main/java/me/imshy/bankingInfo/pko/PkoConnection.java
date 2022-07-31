@@ -2,7 +2,7 @@ package me.imshy.bankingInfo.pko;
 
 import me.imshy.bankingInfo.general.accountDetails.AccountBalance;
 import me.imshy.bankingInfo.general.exception.RequestError;
-import me.imshy.bankingInfo.general.http.client.HttpClient;
+import me.imshy.bankingInfo.general.http.client.IHttpClient;
 import me.imshy.bankingInfo.general.http.request.PostRequest;
 import me.imshy.bankingInfo.general.http.request.RequestResponse;
 import me.imshy.bankingInfo.pko.util.RequestCreator;
@@ -15,10 +15,10 @@ public class PkoConnection {
   private final String INIT_URL = "https://www.ipko.pl/ipko3/init";
   private final String LOGOUT_URL = "https://www.ipko.pl/ipko3/logout";
 
-  private final HttpClient httpClient;
+  private final IHttpClient httpClient;
   private final SessionAttributes sessionAttributes;
 
-  PkoConnection(HttpClient httpClient, SessionAttributes sessionAttributes) {
+  PkoConnection(IHttpClient httpClient, SessionAttributes sessionAttributes) {
     this.httpClient = httpClient;
     this.sessionAttributes = sessionAttributes;
   }

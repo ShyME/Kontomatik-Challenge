@@ -6,10 +6,9 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
-import java.io.Closeable;
 import java.io.IOException;
 
-public class HttpClient implements Closeable {
+public class HttpClient implements IHttpClient {
 
   private final CloseableHttpClient client;
 
@@ -18,6 +17,7 @@ public class HttpClient implements Closeable {
         .build();
   }
 
+  @Override
   public RequestResponse sendRequest(PostRequest postRequest) {
     try {
       CloseableHttpResponse response = client.execute(postRequest.getHttpPost());
