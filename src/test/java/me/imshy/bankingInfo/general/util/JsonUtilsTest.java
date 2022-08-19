@@ -1,5 +1,6 @@
 package me.imshy.bankingInfo.general.util;
 
+import me.imshy.bankingInfo.adapters.general.util.JsonUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -31,19 +32,6 @@ class JsonUtilsTest {
           "id2"
       ]
       """;
-
-  @Test
-  void getValueFromJson_shouldSuccess() {
-    String value = JsonUtils.getValueFromJson("guid", TEST_JSON);
-    assertThat(value.replace("\"", "")).isEqualTo("4f88c4fc-71c2-4dbf-8b91-906c4c1c9522");
-  }
-
-  @Test
-  void whenKeyNotFound_getValueFromJson_shouldThrowException() {
-    assertThatThrownBy(() -> {
-      JsonUtils.getValueFromJson("flow_id", TEST_JSON);
-    }).isInstanceOf(RuntimeException.class);
-  }
 
   @Test
   void nodeTraversal_shouldSuccess() {

@@ -1,10 +1,9 @@
 package me.imshy.bankingInfo;
 
-import me.imshy.bankingInfo.general.accountDetails.Account;
-import me.imshy.bankingInfo.general.accountDetails.Credentials;
-import me.imshy.bankingInfo.general.credentialsReader.CredentialsStdInReader;
-import me.imshy.bankingInfo.pko.PkoConnection;
-import me.imshy.bankingInfo.pko.PkoSignIn;
+import me.imshy.bankingInfo.domain.accountDetails.Account;
+import me.imshy.bankingInfo.domain.accountDetails.Credentials;
+import me.imshy.bankingInfo.adapters.general.credentialsReader.CredentialsStdInReader;
+import me.imshy.bankingInfo.domain.pko.PkoAccountInfoProvider;
 
 import java.util.List;
 
@@ -13,13 +12,10 @@ public class Application {
   public static void main(String[] args) {
     Credentials credentials = CredentialsStdInReader.readCredentials();
 
-    PkoSignIn pkoSignIn = new PkoSignIn();
-    PkoConnection pkoConnection = pkoSignIn.login(credentials);
+    PkoAccountInfoProvider pkoAccountInfoProvider = new PkoAccountInfoProvider(credentials);
+    List<Account> accounts = pkoAccountInfoProvider.getAccountsInfo();
 
-    List<Account> accountList = pkoConnection.getAccountBalances();
-    accountList.forEach(System.out::println);
-
-    pkoConnection.logout();
+    accounts.forEach(System.out::println);
   }
 
 }

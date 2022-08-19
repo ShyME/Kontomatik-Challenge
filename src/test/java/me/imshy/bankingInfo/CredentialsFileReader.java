@@ -1,6 +1,6 @@
 package me.imshy.bankingInfo;
 
-import me.imshy.bankingInfo.general.accountDetails.Credentials;
+import me.imshy.bankingInfo.domain.accountDetails.Credentials;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -1,8 +1,9 @@
 package me.imshy.bankingInfo.pko;
 
 import me.imshy.bankingInfo.CredentialsFileReader;
-import me.imshy.bankingInfo.general.accountDetails.Credentials;
-import me.imshy.bankingInfo.general.exception.UnsuccessfulSignIn;
+import me.imshy.bankingInfo.domain.pko.http.PkoSignIn;
+import me.imshy.bankingInfo.domain.accountDetails.Credentials;
+import me.imshy.bankingInfo.domain.exception.UnsuccessfulSignIn;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

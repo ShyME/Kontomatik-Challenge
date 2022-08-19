@@ -1,6 +1,7 @@
 package me.imshy.bankingInfo.pko.util;
 
-import me.imshy.bankingInfo.general.accountDetails.Account;
+import me.imshy.bankingInfo.adapters.pko.util.ResponseParser;
+import me.imshy.bankingInfo.domain.accountDetails.Account;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

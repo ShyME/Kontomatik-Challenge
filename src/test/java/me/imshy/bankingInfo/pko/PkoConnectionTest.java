@@ -2,8 +2,10 @@ package me.imshy.bankingInfo.pko;
 
 
 import me.imshy.bankingInfo.CredentialsFileReader;
-import me.imshy.bankingInfo.general.accountDetails.Account;
-import me.imshy.bankingInfo.general.accountDetails.Credentials;
+import me.imshy.bankingInfo.domain.pko.http.PkoConnection;
+import me.imshy.bankingInfo.domain.pko.http.PkoSignIn;
+import me.imshy.bankingInfo.domain.accountDetails.Account;
+import me.imshy.bankingInfo.domain.accountDetails.Credentials;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
