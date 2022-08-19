@@ -8,9 +8,11 @@ import java.util.List;
 
 public class CredentialsFileReader {
 
-  public static Credentials readCredentials(String filePath) {
+  public static final String CREDENTIALS_FILEPATH = "credentials.txt";
+
+  public static Credentials readCredentials() {
     try {
-      List<String> fileLines = Files.readAllLines(Path.of(filePath));
+      List<String> fileLines = Files.readAllLines(Path.of(CREDENTIALS_FILEPATH));
 
       String login = fileLines.get(0);
       String password = fileLines.get(1);
@@ -19,6 +21,6 @@ public class CredentialsFileReader {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    throw new RuntimeException("Reading credentials from file: " + filePath + " failed.");
+    throw new RuntimeException("Reading credentials from file: " + CREDENTIALS_FILEPATH + " failed.");
   }
 }

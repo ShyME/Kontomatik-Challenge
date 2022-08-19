@@ -2,10 +2,9 @@ package me.imshy.bankingInfo.adapters.pko.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import me.imshy.bankingInfo.adapters.general.http.request.Response;
-import me.imshy.bankingInfo.domain.accountDetails.Account;
-import me.imshy.bankingInfo.domain.exception.UnsuccessfulSignIn;
 import me.imshy.bankingInfo.adapters.general.util.JsonUtils;
 import me.imshy.bankingInfo.adapters.pko.SessionAttributes;
+import me.imshy.bankingInfo.domain.accountDetails.Account;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,9 +13,6 @@ import java.util.List;
 public class ResponseParser {
   public static SessionAttributes parseSessionAttributes(Response loginResponse) {
     String sessionId = loginResponse.headers().get("X-Session-Id");
-    if (sessionId == null || sessionId.isEmpty()) {
-      throw new UnsuccessfulSignIn("Response lacks session id");
-    }
 
     JsonNode loginJson = JsonUtils.getJsonAsNode(loginResponse.body());
 

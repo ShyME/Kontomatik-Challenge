@@ -1,12 +1,11 @@
-package me.imshy.bankingInfo.general.util;
+package me.imshy.bankingInfo.adapters.general.util;
 
-import me.imshy.bankingInfo.adapters.general.util.JsonUtils;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JsonUtilsTest {
 
@@ -17,6 +16,7 @@ class JsonUtilsTest {
           "guid": "4f88c4fc-71c2-4dbf-8b91-906c4c1c9522",
           "isActive": false,
           "age": 31,
+          "first": true,
           "eyeColor": "green",
           "name": {
               "first": "Simon",
@@ -34,22 +34,15 @@ class JsonUtilsTest {
       """;
 
   @Test
-  void nodeTraversal_shouldSuccess() {
-    String value = JsonUtils.getJsonAsNode(TEST_JSON).get("name").get("first").textValue();
-    assertThat(value).isEqualTo("Simon");
-  }
-
-  @Test
-  void whenKeyNotFound_nodeTraversal_shouldThrowNullPointer() {
-    assertThatThrownBy(() -> {
-      JsonUtils.getJsonAsNode(TEST_JSON).get("name").get("third").get("second").textValue();
-    }).isInstanceOf(NullPointerException.class);
-  }
-
-  @Test
   void parseFlatStringArray_shouldSuccess() {
     List<String> stringList = JsonUtils.parseFlatStringArray(ARRAY_AS_STRING);
     assertThat(stringList.size()).isEqualTo(2);
     assertThat(stringList.get(0)).isEqualTo("id1");
+  }
+
+  @Test
+  void findValuesByKey_shouldSuccess() {
+    List<JsonNode> foundValues = JsonUtils.findValuesByKey("first", TEST_JSON);
+    assertThat(foundValues.size()).isEqualTo(2);
   }
 }

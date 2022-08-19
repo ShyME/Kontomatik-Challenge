@@ -14,17 +14,20 @@ import java.util.List;
 
 public class ApacheHttpClient implements HttpClient {
 
-  private final CloseableHttpClient client;
-
-  public ApacheHttpClient() {
-    client = HttpClientBuilder.create()
-        .build();
-  }
-
   @Override
   public Response fetchRequest(PostRequest postRequest) {
-    try {
+    try(CloseableHttpClient client = HttpClientBuilder.create().build()) {
       CloseableHttpResponse response = client.execute(ApacheRequests.mapRequestToApache(postRequest));
+
+      return handleResponse(response);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    throw new RuntimeException("Sending request failed");
+  }
+
+  private Response handleResponse(CloseableHttpResponse response) {
+    try(response) {
       Response requestResponse = ApacheRequests.parseApacheResponse(response);
 
       List<String> errors = requestResponse.getErrorDescriptions();
@@ -34,8 +37,7 @@ public class ApacheHttpClient implements HttpClient {
 
       return requestResponse;
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
-    throw new RuntimeException("Sending request failed");
   }
 }

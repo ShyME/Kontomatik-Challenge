@@ -1,9 +1,8 @@
-package me.imshy.bankingInfo.pko;
+package me.imshy.bankingInfo.domain.pko.http;
 
 
 import me.imshy.bankingInfo.CredentialsFileReader;
-import me.imshy.bankingInfo.domain.pko.http.PkoConnection;
-import me.imshy.bankingInfo.domain.pko.http.PkoSignIn;
+import me.imshy.bankingInfo.adapters.general.http.client.apache.ApacheHttpClient;
 import me.imshy.bankingInfo.domain.accountDetails.Account;
 import me.imshy.bankingInfo.domain.accountDetails.Credentials;
 import org.junit.jupiter.api.Test;
@@ -13,8 +12,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PkoConnectionTest {
-  private final String credentialsFilePath = "credentials.txt";
-
   @Test
   void getAccountBalances_shouldSuccess() {
     PkoConnection pkoConnection = createValidPkoConnection();
@@ -31,8 +28,8 @@ class PkoConnectionTest {
   }
 
   private PkoConnection createValidPkoConnection() {
-    Credentials credentials = CredentialsFileReader.readCredentials(credentialsFilePath);
-    PkoSignIn pkoSignIn = new PkoSignIn();
+    Credentials credentials = CredentialsFileReader.readCredentials();
+    PkoSignIn pkoSignIn = new PkoSignIn(new ApacheHttpClient());
     return pkoSignIn.login(credentials);
   }
 }

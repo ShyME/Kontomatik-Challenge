@@ -1,5 +1,6 @@
 package me.imshy.bankingInfo.domain.pko;
 
+import me.imshy.bankingInfo.adapters.general.http.client.HttpClient;
 import me.imshy.bankingInfo.domain.accountDetails.Account;
 import me.imshy.bankingInfo.domain.accountDetails.Credentials;
 import me.imshy.bankingInfo.domain.pko.http.PkoConnection;
@@ -10,8 +11,8 @@ import java.util.List;
 public class PkoAccountInfoProvider {
   private final PkoConnection pkoConnection;
 
-  public PkoAccountInfoProvider(Credentials credentials) {
-    PkoSignIn pkoSignIn = new PkoSignIn();
+  public PkoAccountInfoProvider(HttpClient httpClient, Credentials credentials) {
+    PkoSignIn pkoSignIn = new PkoSignIn(httpClient);
     pkoConnection = pkoSignIn.login(credentials);
   }
 

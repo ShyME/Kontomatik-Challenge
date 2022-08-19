@@ -1,20 +1,23 @@
 package me.imshy.bankingInfo.domain.pko.http;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import me.imshy.bankingInfo.adapters.pko.SessionAttributes;
-import me.imshy.bankingInfo.domain.accountDetails.Credentials;
 import me.imshy.bankingInfo.adapters.general.exception.RequestError;
-import me.imshy.bankingInfo.domain.exception.UnsuccessfulSignIn;
-import me.imshy.bankingInfo.adapters.general.http.client.apache.ApacheHttpClient;
 import me.imshy.bankingInfo.adapters.general.http.client.HttpClient;
 import me.imshy.bankingInfo.adapters.general.http.request.PostRequest;
 import me.imshy.bankingInfo.adapters.general.http.request.Response;
+import me.imshy.bankingInfo.adapters.pko.SessionAttributes;
 import me.imshy.bankingInfo.adapters.pko.util.Requests;
 import me.imshy.bankingInfo.adapters.pko.util.ResponseParser;
+import me.imshy.bankingInfo.domain.accountDetails.Credentials;
+import me.imshy.bankingInfo.domain.exception.UnsuccessfulSignIn;
 
 public class PkoSignIn {
 
-  private final HttpClient httpClient = new ApacheHttpClient();
+  private final HttpClient httpClient;
+
+  public PkoSignIn(HttpClient httpClient) {
+    this.httpClient = httpClient;
+  }
 
   public PkoConnection login(Credentials credentials) {
     try {
@@ -24,7 +27,7 @@ public class PkoSignIn {
       assertSignedIn(passwordResponse);
 
       return new PkoConnection(httpClient, sessionAttributes.sessionId());
-    } catch(RequestError e) {
+    } catch (RequestError e) {
       e.printStackTrace();
       throw new UnsuccessfulSignIn(e.ERROR_DESCRIPTIONS.toString());
     }
@@ -36,7 +39,7 @@ public class PkoSignIn {
     String stateId = passwordResponseJson.get("state_id").textValue();
     boolean finished = passwordResponseJson.get("finished").asBoolean();
 
-    if(!stateId.equals("END") && !finished) {
+    if (!stateId.equals("END") && !finished) {
       throw new UnsuccessfulSignIn("Password response does not contain fields confirming successful Sign In.");
     }
   }
@@ -46,7 +49,7 @@ public class PkoSignIn {
     Response loginResponse = httpClient.fetchRequest(loginRequest);
 
     String stateId = loginResponse.toJson().get("state_id").textValue();
-    if(stateId.equals("captcha")) {
+    if (stateId.equals("captcha")) {
       throw new UnsuccessfulSignIn("Sign In is blocked due to too many unsuccessful attempts.");
     }
 

@@ -47,7 +47,7 @@ public class JsonUtils {
       List<JsonNode> foundValues = root.findValues(key);
 
       return foundValues.stream()
-          .filter(jsonNode -> !jsonNode.isEmpty())
+          .filter(jsonNode -> !jsonNode.isNull())
           .collect(Collectors.toList());
     } catch (JsonProcessingException | NullPointerException e) {
       e.printStackTrace();
