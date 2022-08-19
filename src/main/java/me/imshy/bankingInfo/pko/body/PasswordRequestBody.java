@@ -1,7 +1,5 @@
 package me.imshy.bankingInfo.pko.body;
 
-import me.imshy.bankingInfo.pko.SessionAttributes;
-
 import java.util.Map;
 
 public class PasswordRequestBody {
@@ -12,9 +10,9 @@ public class PasswordRequestBody {
   public final String flow_id;
   public final String token;
 
-  public PasswordRequestBody(String password, SessionAttributes sessionAttributes) {
+  public PasswordRequestBody(String password, String flow_id, String token) {
     data = Map.of("password", password);
-    this.token = sessionAttributes.token();
-    this.flow_id = sessionAttributes.flowId();
+    this.token = token;
+    this.flow_id = flow_id;
   }
 }

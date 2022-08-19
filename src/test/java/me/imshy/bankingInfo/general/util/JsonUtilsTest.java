@@ -3,13 +3,13 @@ package me.imshy.bankingInfo.general.util;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JsonUtilsTest {
 
-  private final String randomJson = """
+  private final String TEST_JSON = """
       {
           "_id": "62e1358a33a47da603c347d5",
           "index": 0,
@@ -25,7 +25,7 @@ class JsonUtilsTest {
         }
       """;
 
-  private final String arrayAsString = """
+  private final String ARRAY_AS_STRING = """
       [
           "id1",
           "id2"
@@ -34,31 +34,33 @@ class JsonUtilsTest {
 
   @Test
   void getValueFromJson_shouldSuccess() {
-    Optional<String> value = JsonUtils.getValueFromJson("guid", randomJson);
-    assertThat(value.get().replace("\"", "")).isEqualTo("4f88c4fc-71c2-4dbf-8b91-906c4c1c9522");
+    String value = JsonUtils.getValueFromJson("guid", TEST_JSON);
+    assertThat(value.replace("\"", "")).isEqualTo("4f88c4fc-71c2-4dbf-8b91-906c4c1c9522");
   }
 
   @Test
-  void whenKeyNotFound_getValueFromJson_shouldReturnEmpty() {
-    Optional<String> value = JsonUtils.getValueFromJson("flow_id", randomJson);
-    assertThat(value).isEqualTo(Optional.empty());
+  void whenKeyNotFound_getValueFromJson_shouldThrowException() {
+    assertThatThrownBy(() -> {
+      JsonUtils.getValueFromJson("flow_id", TEST_JSON);
+    }).isInstanceOf(RuntimeException.class);
   }
 
   @Test
-  void getNestedValueFromJson_shouldSuccess() {
-    String value = JsonUtils.getNestedValueFromJson(new String[]{"name", "first"}, randomJson).get().replace("\"", "");
+  void nodeTraversal_shouldSuccess() {
+    String value = JsonUtils.getJsonAsNode(TEST_JSON).get("name").get("first").textValue();
     assertThat(value).isEqualTo("Simon");
   }
 
   @Test
-  void whenKeyNotFound_getNestedValueFromJson_shouldReturnEmpty() {
-    Optional<String> value = JsonUtils.getNestedValueFromJson(new String[]{"name", "third", "second"}, randomJson);
-    assertThat(value).isEqualTo(Optional.empty());
+  void whenKeyNotFound_nodeTraversal_shouldThrowNullPointer() {
+    assertThatThrownBy(() -> {
+      JsonUtils.getJsonAsNode(TEST_JSON).get("name").get("third").get("second").textValue();
+    }).isInstanceOf(NullPointerException.class);
   }
 
   @Test
   void parseFlatStringArray_shouldSuccess() {
-    List<String> stringList = JsonUtils.parseFlatStringArray(arrayAsString);
+    List<String> stringList = JsonUtils.parseFlatStringArray(ARRAY_AS_STRING);
     assertThat(stringList.size()).isEqualTo(2);
     assertThat(stringList.get(0)).isEqualTo("id1");
   }

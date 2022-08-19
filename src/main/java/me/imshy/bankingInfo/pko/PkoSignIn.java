@@ -1,53 +1,45 @@
 package me.imshy.bankingInfo.pko;
 
-import me.imshy.bankingInfo.general.accountDetails.LoginCredentials;
+import me.imshy.bankingInfo.general.accountDetails.Credentials;
+import me.imshy.bankingInfo.general.exception.RequestError;
 import me.imshy.bankingInfo.general.exception.UnsuccessfulSignIn;
+import me.imshy.bankingInfo.general.http.client.apache.ApacheHttpClient;
 import me.imshy.bankingInfo.general.http.client.HttpClient;
-import me.imshy.bankingInfo.general.http.client.IHttpClient;
 import me.imshy.bankingInfo.general.http.request.PostRequest;
-import me.imshy.bankingInfo.general.http.request.RequestResponse;
-import me.imshy.bankingInfo.pko.util.RequestCreator;
-import me.imshy.bankingInfo.pko.util.ResponseParserUtils;
+import me.imshy.bankingInfo.general.http.request.Response;
+import me.imshy.bankingInfo.pko.util.Requests;
+import me.imshy.bankingInfo.pko.util.ResponseParser;
 
 public class PkoSignIn {
 
-  private final String LOGIN_URL = "https://www.ipko.pl/ipko3/login";
+  private final HttpClient httpClient = new ApacheHttpClient();
 
-  private final IHttpClient httpClient;
+  public PkoConnection login(Credentials credentials) {
+    try {
+      SessionAttributes sessionAttributes = fetchLoginRequest(credentials.login());
+      Response passwordResponse = fetchPasswordRequest(credentials.password(), sessionAttributes);
 
-  private SessionAttributes sessionAttributes;
-
-  public PkoSignIn() {
-    this.httpClient = new HttpClient();
+      return new PkoConnection(httpClient, sessionAttributes.sessionId());
+    } catch(RequestError e) {
+      e.printStackTrace();
+      throw new UnsuccessfulSignIn(e.ERROR_DESCRIPTIONS.toString());
+    }
   }
 
-  public PkoConnection login(LoginCredentials loginCredentials) {
-    executeLoginRequest(loginCredentials.login());
-    executePasswordRequest(loginCredentials.password());
-    return new PkoConnection(httpClient, sessionAttributes);
-  }
+  private SessionAttributes fetchLoginRequest(String login) {
+    PostRequest loginRequest = Requests.getLoginRequest(login);
+    Response loginResponse = httpClient.fetchRequest(loginRequest);
 
-  private RequestResponse executeLoginRequest(String login) {
-    PostRequest loginRequest = RequestCreator.getLoginRequest(LOGIN_URL, login);
-    RequestResponse loginResponse = httpClient.sendRequest(loginRequest);
-    if (!loginResponse.isSuccessful()) {
-      throw new UnsuccessfulSignIn("Bad login");
+    String stateId = loginResponse.toJson().get("state_id").textValue();
+    if(stateId.equals("captcha")) {
+      throw new UnsuccessfulSignIn("Sign In is blocked due to too many unsuccessful attempts.");
     }
 
-    sessionAttributes = ResponseParserUtils.parseSessionAttributes(loginResponse);
-
-    return loginResponse;
+    return ResponseParser.parseSessionAttributes(loginResponse);
   }
 
-  private RequestResponse executePasswordRequest(String password) throws UnsuccessfulSignIn {
-    PostRequest passwordRequest = RequestCreator.getPasswordRequest(LOGIN_URL, password, sessionAttributes);
-    RequestResponse passwordResponse = httpClient.sendRequest(passwordRequest);
-    if (!passwordResponse.isSuccessful()) {
-      throw new UnsuccessfulSignIn("Bad password");
-    }
-
-    return passwordResponse;
+  private Response fetchPasswordRequest(String password, SessionAttributes sessionAttributes) {
+    PostRequest passwordRequest = Requests.getPasswordRequest(password, sessionAttributes);
+    return httpClient.fetchRequest(passwordRequest);
   }
-
-
 }

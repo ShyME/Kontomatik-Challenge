@@ -6,6 +6,8 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
-loginCredentials.txt
+credentials.txt
 .idea/
 target/
+/out/
+/META-INF/

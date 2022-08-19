@@ -1,4 +1,4 @@
-package me.imshy.bankingInfo.general.util;
+package me.imshy.bankingInfo.general.http.client.apache.util;
 
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.ParseException;

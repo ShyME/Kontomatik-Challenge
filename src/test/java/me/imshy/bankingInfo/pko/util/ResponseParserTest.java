@@ -1,6 +1,6 @@
 package me.imshy.bankingInfo.pko.util;
 
-import me.imshy.bankingInfo.general.accountDetails.AccountBalance;
+import me.imshy.bankingInfo.general.accountDetails.Account;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -8,9 +8,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ResponseParserUtilsTest {
+class ResponseParserTest {
 
-  private final String initResponseJson = """
+  private final String INIT_RESPONSE_JSON = """
       {
       	"httpStatus": 200,
       	"response": {
@@ -31,8 +31,8 @@ class ResponseParserUtilsTest {
 
   @Test
   void parseAccountBalances_shouldSuccess() {
-    List<AccountBalance> accountBalanceList = ResponseParserUtils.parseAccountBalances(initResponseJson);
-    assertThat(accountBalanceList.size()).isEqualTo(1);
-    assertThat(accountBalanceList.get(0).balance()).isEqualTo(new BigDecimal("200.00"));
+    List<Account> accountList = ResponseParser.parseAccountBalances(INIT_RESPONSE_JSON);
+    assertThat(accountList.size()).isEqualTo(1);
+    assertThat(accountList.get(0).balance()).isEqualTo(new BigDecimal("200.00"));
   }
 }
