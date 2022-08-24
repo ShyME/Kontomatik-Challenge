@@ -1,43 +1,36 @@
 package me.imshy.bankingInfo.adapters.general.http.client.apache;
 
-import me.imshy.bankingInfo.adapters.general.exception.RequestError;
+import me.imshy.bankingInfo.adapters.general.exception.HttpCodeError;
 import me.imshy.bankingInfo.adapters.general.http.client.apache.util.ApacheRequests;
-import me.imshy.bankingInfo.adapters.general.http.request.PostRequest;
-import me.imshy.bankingInfo.adapters.general.http.request.Response;
-import me.imshy.bankingInfo.adapters.general.http.client.HttpClient;
+import me.imshy.bankingInfo.domain.general.http.HttpClient;
+import me.imshy.bankingInfo.domain.general.http.request.JsonPostRequest;
+import me.imshy.bankingInfo.domain.general.http.request.Response;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 
 import java.io.IOException;
-import java.util.List;
 
 public class ApacheHttpClient implements HttpClient {
-
   @Override
-  public Response fetchRequest(PostRequest postRequest) {
-    try(CloseableHttpClient client = HttpClientBuilder.create().build()) {
-      CloseableHttpResponse response = client.execute(ApacheRequests.mapRequestToApache(postRequest));
-
+  public Response fetch(JsonPostRequest jsonPostRequest) {
+    try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+      CloseableHttpResponse response = client.execute(ApacheRequests.mapRequestToApache(jsonPostRequest));
       return handleResponse(response);
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e.getCause());
     }
-    throw new RuntimeException("Sending request failed");
   }
 
   private Response handleResponse(CloseableHttpResponse response) {
-    try(response) {
+    try (response) {
       Response requestResponse = ApacheRequests.parseApacheResponse(response);
-
-      List<String> errors = requestResponse.getErrorDescriptions();
-      if(requestResponse.code() >= 400 || errors.size() > 0) {
-        throw new RequestError(requestResponse.code(), errors);
+      if (requestResponse.code() >= 400) {
+        throw new HttpCodeError(requestResponse.code());
       }
-
       return requestResponse;
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException(e.getCause());
     }
   }
 }
