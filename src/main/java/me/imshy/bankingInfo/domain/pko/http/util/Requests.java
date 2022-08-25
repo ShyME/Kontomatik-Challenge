@@ -1,13 +1,13 @@
 package me.imshy.bankingInfo.domain.pko.http.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import me.imshy.bankingInfo.adapters.general.util.JsonUtils;
 import me.imshy.bankingInfo.domain.general.http.request.JsonPostRequest;
 import me.imshy.bankingInfo.domain.general.http.request.Response;
 import me.imshy.bankingInfo.domain.pko.http.SessionAttributes;
 import me.imshy.bankingInfo.domain.pko.http.body.InitRequestBody;
 import me.imshy.bankingInfo.domain.pko.http.body.LoginRequestBody;
 import me.imshy.bankingInfo.domain.pko.http.body.PasswordRequestBody;
+import me.imshy.bankingInfo.infrastructure.general.util.JsonUtils;
 
 import java.util.List;
 

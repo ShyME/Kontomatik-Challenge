@@ -1,4 +1,4 @@
-package me.imshy.bankingInfo.adapters.general.util;
+package me.imshy.bankingInfo.infrastructure.general.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

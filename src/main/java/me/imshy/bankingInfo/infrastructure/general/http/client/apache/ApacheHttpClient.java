@@ -1,10 +1,10 @@
-package me.imshy.bankingInfo.adapters.general.http.client.apache;
+package me.imshy.bankingInfo.infrastructure.general.http.client.apache;
 
-import me.imshy.bankingInfo.adapters.general.exception.HttpCodeError;
-import me.imshy.bankingInfo.adapters.general.http.client.apache.util.ApacheRequests;
 import me.imshy.bankingInfo.domain.general.http.HttpClient;
 import me.imshy.bankingInfo.domain.general.http.request.JsonPostRequest;
 import me.imshy.bankingInfo.domain.general.http.request.Response;
+import me.imshy.bankingInfo.infrastructure.general.exception.HttpCodeError;
+import me.imshy.bankingInfo.infrastructure.general.http.client.apache.util.ApacheRequests;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;

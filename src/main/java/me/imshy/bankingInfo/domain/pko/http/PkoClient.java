@@ -1,12 +1,12 @@
 package me.imshy.bankingInfo.domain.pko.http;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import me.imshy.bankingInfo.adapters.general.exception.HttpCodeError;
 import me.imshy.bankingInfo.domain.general.http.HttpClient;
 import me.imshy.bankingInfo.domain.general.http.request.JsonPostRequest;
 import me.imshy.bankingInfo.domain.general.http.request.Response;
 import me.imshy.bankingInfo.domain.pko.http.exception.PkoStateError;
 import me.imshy.bankingInfo.domain.pko.http.util.Requests;
+import me.imshy.bankingInfo.infrastructure.general.exception.HttpCodeError;
 
 import java.util.List;
 

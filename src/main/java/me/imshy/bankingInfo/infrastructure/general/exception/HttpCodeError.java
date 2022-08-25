@@ -1,4 +1,4 @@
-package me.imshy.bankingInfo.adapters.general.exception;
+package me.imshy.bankingInfo.infrastructure.general.exception;
 
 public class HttpCodeError extends RuntimeException {
   public HttpCodeError(int code) {

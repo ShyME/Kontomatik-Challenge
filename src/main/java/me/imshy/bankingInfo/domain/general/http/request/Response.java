@@ -1,7 +1,7 @@
 package me.imshy.bankingInfo.domain.general.http.request;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import me.imshy.bankingInfo.adapters.general.util.JsonUtils;
+import me.imshy.bankingInfo.infrastructure.general.util.JsonUtils;
 
 import java.util.Map;
 

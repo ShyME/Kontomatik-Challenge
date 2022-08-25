@@ -1,11 +1,11 @@
 package me.imshy.bankingInfo;
 
-import me.imshy.bankingInfo.adapters.general.http.client.apache.ApacheHttpClient;
 import me.imshy.bankingInfo.domain.general.accountDetails.Account;
 import me.imshy.bankingInfo.domain.general.accountDetails.Credentials;
 import me.imshy.bankingInfo.domain.pko.PkoAccountScraper;
 import me.imshy.bankingInfo.domain.pko.http.PkoClient;
 import me.imshy.bankingInfo.domain.pko.http.PkoSession;
+import me.imshy.bankingInfo.infrastructure.general.http.client.apache.ApacheHttpClient;
 
 import java.util.List;
 import java.util.Scanner;

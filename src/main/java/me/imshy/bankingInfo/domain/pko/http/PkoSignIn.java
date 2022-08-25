@@ -1,13 +1,13 @@
 package me.imshy.bankingInfo.domain.pko.http;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import me.imshy.bankingInfo.adapters.general.util.JsonUtils;
 import me.imshy.bankingInfo.domain.general.accountDetails.Credentials;
 import me.imshy.bankingInfo.domain.general.http.exception.signIn.*;
 import me.imshy.bankingInfo.domain.general.http.request.JsonPostRequest;
 import me.imshy.bankingInfo.domain.general.http.request.Response;
 import me.imshy.bankingInfo.domain.pko.http.exception.PkoStateError;
 import me.imshy.bankingInfo.domain.pko.http.util.Requests;
+import me.imshy.bankingInfo.infrastructure.general.util.JsonUtils;
 
 public class PkoSignIn {
   private final PkoClient pkoClient;

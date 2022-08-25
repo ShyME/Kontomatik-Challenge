@@ -17,8 +17,7 @@ public class CredentialsFileReader {
       String password = fileLines.get(1);
       return new Credentials(login, password);
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException("Reading credentials from file: " + CREDENTIALS_FILEPATH + " failed.");
     }
-    throw new RuntimeException("Reading credentials from file: " + CREDENTIALS_FILEPATH + " failed.");
   }
 }

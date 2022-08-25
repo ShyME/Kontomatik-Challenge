@@ -1,6 +1,6 @@
 package me.imshy.bankingInfo.domain.general.http.request;
 
-import me.imshy.bankingInfo.adapters.general.util.JsonUtils;
+import me.imshy.bankingInfo.infrastructure.general.util.JsonUtils;
 
 import java.util.HashMap;
 import java.util.Map;

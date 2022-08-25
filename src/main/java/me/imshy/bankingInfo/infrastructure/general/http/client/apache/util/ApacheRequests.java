@@ -1,4 +1,4 @@
-package me.imshy.bankingInfo.adapters.general.http.client.apache.util;
+package me.imshy.bankingInfo.infrastructure.general.http.client.apache.util;
 
 import me.imshy.bankingInfo.domain.general.http.request.JsonPostRequest;
 import me.imshy.bankingInfo.domain.general.http.request.Response;
@@ -7,6 +7,7 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class ApacheRequests {
 
   private static String toString(HttpEntity httpEntity) {
     try {
-      return org.apache.hc.core5.http.io.entity.EntityUtils.toString(httpEntity);
+      return EntityUtils.toString(httpEntity);
     } catch (IOException | ParseException e) {
       throw new RuntimeException(e.getCause());
     }
