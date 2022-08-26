@@ -5,7 +5,6 @@ import me.imshy.bankingInfo.domain.general.accountDetails.Account;
 import me.imshy.bankingInfo.domain.general.http.request.JsonPostRequest;
 import me.imshy.bankingInfo.domain.general.http.request.Response;
 import me.imshy.bankingInfo.domain.pko.http.util.Requests;
-import me.imshy.bankingInfo.infrastructure.general.exception.HttpCodeError;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class PkoSession {
     this.sessionId = sessionId;
   }
 
-  public List<Account> importAccounts() throws HttpCodeError {
+  public List<Account> importAccounts() {
     Response initResponse = executeInitRequest();
     return parseAccounts(initResponse);
   }
