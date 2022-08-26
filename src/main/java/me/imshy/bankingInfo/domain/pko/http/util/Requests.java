@@ -9,6 +9,7 @@ import me.imshy.bankingInfo.domain.pko.http.body.LoginRequestBody;
 import me.imshy.bankingInfo.domain.pko.http.body.PasswordRequestBody;
 import me.imshy.bankingInfo.infrastructure.general.util.JsonUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Requests {
@@ -38,12 +39,28 @@ public class Requests {
   }
 
   public static List<String> getErrorDescriptions(Response response) {
-    List<JsonNode> errors = JsonUtils.findValuesByKey("errors", response.body());
-    return errors.stream().map(errorNode -> {
-      if (!errorNode.get("description").textValue().equals(""))
-        return errorNode.get("description").textValue();
-      else
-        return errorNode.get("hint").textValue();
-    }).toList();
+    List<JsonNode> errorJsons = JsonUtils.findValuesByKey("errors", response.body());
+    List<String> errors = new ArrayList<>();
+    for (JsonNode errorNode : errorJsons) {
+      if (errorNode.isArray()) {
+        for (int i = 0; i < errorNode.size(); i++) {
+          JsonNode element = errorNode.get(i);
+          errors.addAll(getErrorDescriptions(element));
+        }
+      } else {
+        errors.addAll(getErrorDescriptions(errorNode));
+      }
+    }
+    return errors;
+  }
+
+  private static List<String> getErrorDescriptions(JsonNode errorNode) {
+    List<String> errors = new ArrayList<>();
+    errorNode.elements().forEachRemaining(element -> {
+      if (!element.textValue().equals("")) {
+        errors.add(element.textValue());
+      }
+    });
+    return errors;
   }
 }

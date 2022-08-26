@@ -27,7 +27,7 @@ public class Application {
     String login = scanner.nextLine();
     System.out.print("Password: ");
     String password = scanner.nextLine();
+    scanner.close();
     return new Credentials(login, password);
   }
-
 }

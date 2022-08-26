@@ -1,6 +1,5 @@
-package test.consoleApi.me.imshy.bankingInfo;
+package me.imshy.bankingInfo;
 
-import me.imshy.bankingInfo.Application;
 import me.imshy.bankingInfo.domain.general.accountDetails.Credentials;
 import me.imshy.bankingInfo.domain.general.http.exception.signIn.InvalidLogin;
 import me.imshy.bankingInfo.domain.general.http.exception.signIn.InvalidPassword;
@@ -8,12 +7,12 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import test.CredentialsFileReader;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 class ApplicationTest {
+
   @BeforeEach
   void setUp() {
     StdIOStub.startCapturingOutput();
@@ -35,11 +34,8 @@ class ApplicationTest {
     Application.main(new String[]{});
 
     String output = StdIOStub.getOutput();
-    StdIOStub.resetDoubledStreams();
     Assertions.assertThat(output)
-        .contains("accountNumber")
-        .contains("currency")
-        .contains("balance");
+        .containsPattern("Account\\[accountNumber=\\d{26},\\s?currency=\\w+,\\sbalance=\\d+\\.\\d{2}]");
   }
 
   @Test
@@ -65,30 +61,35 @@ class ApplicationTest {
         .isInstanceOf(InvalidLogin.class);
   }
 
-
   private static class StdIOStub {
-    private static InputStream originalInputStream;
-    private static PrintStream originalOutputStream;
+    private static final InputStream DEFAULT_SYSTEM_IN = System.in;
+    private static final PrintStream DEFAULT_SYSTEM_OUT = System.out;
+    private static InputStream inputStream;
     private static OutputStream outputStream;
 
-    private static void startCapturingOutput() {
-      originalOutputStream = System.out;
+    public static void startCapturingOutput() {
       outputStream = new ByteArrayOutputStream();
       System.setOut(new PrintStream(outputStream, false, StandardCharsets.UTF_8));
     }
 
-    private static void input(String input) {
-      originalInputStream = System.in;
-      System.setIn(new ByteArrayInputStream(input.getBytes()));
+    public static void input(String input) {
+      inputStream = new ByteArrayInputStream(input.getBytes());
+      System.setIn(inputStream);
     }
 
-    private static String getOutput() {
+    public static String getOutput() {
       return outputStream.toString();
     }
 
-    private static void resetDoubledStreams() {
-      System.setIn(originalInputStream);
-      System.setOut(originalOutputStream);
+    public static void resetDoubledStreams() {
+      try {
+        inputStream.close();
+        outputStream.close();
+        System.setIn(DEFAULT_SYSTEM_IN);
+        System.setOut(DEFAULT_SYSTEM_OUT);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 }

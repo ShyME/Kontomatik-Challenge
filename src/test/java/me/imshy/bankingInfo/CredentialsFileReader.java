@@ -1,4 +1,4 @@
-package test;
+package me.imshy.bankingInfo;
 
 import me.imshy.bankingInfo.domain.general.accountDetails.Credentials;
 

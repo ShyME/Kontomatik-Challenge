@@ -29,7 +29,7 @@ public class PkoSignIn {
       Response loginResponse = pkoClient.fetch(loginRequest);
       return parseSessionAttributes(loginResponse);
     } catch (PkoStateError e) {
-      throw new InvalidLogin("Invalid login was provided");
+      throw translateLoginStateError(e);
     }
   }
 
@@ -45,41 +45,38 @@ public class PkoSignIn {
     );
   }
 
+  private RuntimeException translateLoginStateError(PkoStateError pkoStateError) {
+    return switch (pkoStateError.getStateId()) {
+      case "login" -> new InvalidLogin("Invalid login was provided");
+      case "captcha" -> new CaptchaNeeded("Please go to https://www.ipko.pl/ and resolve CAPTCHA check");
+      default -> new RuntimeException(pkoStateError.getCause());
+    };
+  }
+
   private Response fetchPasswordRequest(String password, SessionAttributes sessionAttributes) {
     try {
       JsonPostRequest passwordRequest = Requests.createPasswordRequest(password, sessionAttributes);
       return pkoClient.fetch(passwordRequest);
     } catch (PkoStateError e) {
-      throw translateSignInPasswordException(e);
+      throw translateSignInPasswordStateError(e);
     }
   }
 
-  private RuntimeException translateSignInPasswordException(PkoStateError e) {
-    String stateId = e.getStateId();
-    switch (stateId) {
-      case "blocked_channel" -> {
-        return new BlockedChannel(
-            "Sign in was blocked due to too many unsuccessful tries, please go to https://www.ipko.pl/ and resolve the issue"
-        );
-      }
-      case "login" -> {
-        return new InvalidPassword("Invalid password was provided");
-      }
-      case "captcha" -> {
-        return new CaptchaNeeded("Please go to https://www.ipko.pl/ and resolve CAPTCHA check");
-      }
-      default -> {
-        return e;
-      }
-    }
+  private RuntimeException translateSignInPasswordStateError(PkoStateError pkoStateError) {
+    return switch (pkoStateError.getStateId()) {
+      case "login" -> new InvalidPassword("Invalid password was provided");
+      case "blocked_channel" -> new BlockedChannel("Please go to https://www.ipko.pl/ and unblock your account");
+      case "ERROR" ->
+          new UnsuccessfulSignIn("Encountered an error during password request fetch: " + pkoStateError.getMessage());
+      default -> new RuntimeException(pkoStateError.getCause());
+    };
   }
 
   private void assertSignedIn(Response passwordResponse) {
-    JsonNode passwordResponseJson = passwordResponse.toJson();
-    String stateId = passwordResponseJson.get("state_id").textValue();
-    boolean finished = passwordResponseJson.get("finished").asBoolean();
-    if (!stateId.equals("END") && !finished) {
-      throw new UnsuccessfulSignIn("Password response does not contain fields confirming successful Sign In.");
+    String stateId = passwordResponse.toJson().get("state_id").textValue();
+    boolean finished = passwordResponse.toJson().get("finished").asBoolean();
+    if (!stateId.equals("END") || !finished) {
+      throw new UnsuccessfulSignIn("Sign In response does not contain fields confirming successful signing in");
     }
   }
 }

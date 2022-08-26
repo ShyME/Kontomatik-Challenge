@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class ApacheRequests {
+
   public static HttpPost mapRequestToApache(JsonPostRequest jsonPostRequest) {
     var httpPost = new HttpPost(jsonPostRequest.url());
     httpPost.setEntity(new StringEntity(jsonPostRequest.body()));

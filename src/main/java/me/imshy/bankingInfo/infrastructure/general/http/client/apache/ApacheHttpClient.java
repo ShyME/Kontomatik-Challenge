@@ -7,14 +7,14 @@ import me.imshy.bankingInfo.infrastructure.general.exception.HttpCodeError;
 import me.imshy.bankingInfo.infrastructure.general.http.client.apache.util.ApacheRequests;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 
 import java.io.IOException;
 
 public class ApacheHttpClient implements HttpClient {
   @Override
   public Response fetch(JsonPostRequest jsonPostRequest) {
-    try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+    try (CloseableHttpClient client = HttpClients.createDefault()) {
       CloseableHttpResponse response = client.execute(ApacheRequests.mapRequestToApache(jsonPostRequest));
       return handleResponse(response);
     } catch (IOException e) {
