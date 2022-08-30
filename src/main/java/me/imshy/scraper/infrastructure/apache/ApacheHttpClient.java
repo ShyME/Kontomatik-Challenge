@@ -6,48 +6,31 @@ import me.imshy.scraper.domain.http.request.JsonPostRequest;
 import me.imshy.scraper.domain.http.request.Response;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.client5.http.impl.routing.DefaultProxyRoutePlanner;
-import org.apache.hc.client5.http.routing.HttpRoutePlanner;
-import org.apache.hc.core5.http.HttpHost;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URI;
 
 public class ApacheHttpClient implements HttpClient {
 
-  private HttpHost proxy;
+  private final CloseableHttpClientInitializer httpClientInitializer;
 
-  public ApacheHttpClient() {
+  private ApacheHttpClient(CloseableHttpClientInitializer httpClientInitializer) {
+    this.httpClientInitializer = httpClientInitializer;
   }
 
-  public ApacheHttpClient(String proxyUrl) {
-    this.proxy = new HttpHost(proxyUrl);
+  public ApacheHttpClient() {
+    this.httpClientInitializer = new CloseableHttpClientInitializer();
   }
 
   @Override
   public Response fetch(JsonPostRequest jsonPostRequest) {
-    try (CloseableHttpClient client = createClient()) {
+    try (CloseableHttpClient client = httpClientInitializer.createClient()) {
       CloseableHttpResponse response = client.execute(ApacheRequests.mapRequestToApache(jsonPostRequest));
       return handleResponse(response);
     } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      throw new RuntimeException(e);
     }
-  }
-
-  private CloseableHttpClient createClient() {
-    if (proxy == null) {
-      return HttpClients.createDefault();
-    } else {
-      return createProxiedClient();
-    }
-  }
-
-  private CloseableHttpClient createProxiedClient() {
-    HttpRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
-    return HttpClients.custom()
-        .setRoutePlanner(routePlanner)
-        .build();
   }
 
   private Response handleResponse(CloseableHttpResponse response) {
@@ -60,6 +43,26 @@ public class ApacheHttpClient implements HttpClient {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  public static class Builder {
+
+    private final CloseableHttpClientInitializer clientInitializer = new CloseableHttpClientInitializer();
+
+    public Builder setProxy(URI uri) {
+      clientInitializer.setProxy(uri);
+      return this;
+    }
+
+    public Builder trustAll() {
+      clientInitializer.trustAll();
+      return this;
+    }
+
+    public ApacheHttpClient build() {
+      return new ApacheHttpClient(clientInitializer);
+    }
+
   }
 
 }
