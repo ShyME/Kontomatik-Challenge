@@ -19,7 +19,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-class CloseableHttpClientInitializer {
+class HttpClientCreator {
 
   private HttpHost proxyHost;
   private boolean trustAll = false;
@@ -32,7 +32,19 @@ class CloseableHttpClientInitializer {
     this.trustAll = true;
   }
 
-  PoolingHttpClientConnectionManager getTrustAllConnectionManager() {
+  CloseableHttpClient createClient() {
+    HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+    if (proxyHost != null) {
+      HttpRoutePlanner proxyRoutePlanner = new DefaultProxyRoutePlanner(proxyHost);
+      httpClientBuilder.setRoutePlanner(proxyRoutePlanner);
+    }
+    if (trustAll) {
+      httpClientBuilder.setConnectionManager(createAllTrustingConnectionManager());
+    }
+    return httpClientBuilder.build();
+  }
+
+  PoolingHttpClientConnectionManager createAllTrustingConnectionManager() {
     try {
       final SSLContext sslcontext = SSLContexts.custom()
           .loadTrustMaterial(null, new TrustAllStrategy())
@@ -47,18 +59,6 @@ class CloseableHttpClientInitializer {
     } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  CloseableHttpClient createClient() {
-    HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-    if (proxyHost != null) {
-      HttpRoutePlanner proxyRoutePlanner = new DefaultProxyRoutePlanner(proxyHost);
-      httpClientBuilder.setRoutePlanner(proxyRoutePlanner);
-    }
-    if (trustAll) {
-      httpClientBuilder.setConnectionManager(getTrustAllConnectionManager());
-    }
-    return httpClientBuilder.build();
   }
 
 }

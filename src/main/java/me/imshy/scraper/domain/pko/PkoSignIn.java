@@ -58,7 +58,7 @@ public class PkoSignIn {
   private void assertSignedIn(Response passwordResponse) {
     String stateId = passwordResponse.toJson().get("state_id").textValue();
     if (stateId.equals("blocked_channel")) {
-      throw new AccessBlocked("Please go to https://www.ipko.pl/ and unblock your account");
+      throw new AccessBlocked("Blocked account");
     }
     if (!stateId.equals("END")) {
       throw new InvalidCredentials("Invalid credentials");

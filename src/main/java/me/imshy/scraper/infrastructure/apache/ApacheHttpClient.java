@@ -13,19 +13,19 @@ import java.net.URI;
 
 public class ApacheHttpClient implements HttpClient {
 
-  private final CloseableHttpClientInitializer httpClientInitializer;
+  private final HttpClientCreator httpClientCreator;
 
-  private ApacheHttpClient(CloseableHttpClientInitializer httpClientInitializer) {
-    this.httpClientInitializer = httpClientInitializer;
+  private ApacheHttpClient(HttpClientCreator httpClientCreator) {
+    this.httpClientCreator = httpClientCreator;
   }
 
   public ApacheHttpClient() {
-    this.httpClientInitializer = new CloseableHttpClientInitializer();
+    this.httpClientCreator = new HttpClientCreator();
   }
 
   @Override
   public Response fetch(JsonPostRequest jsonPostRequest) {
-    try (CloseableHttpClient client = httpClientInitializer.createClient()) {
+    try (CloseableHttpClient client = httpClientCreator.createClient()) {
       CloseableHttpResponse response = client.execute(ApacheRequests.mapRequestToApache(jsonPostRequest));
       return handleResponse(response);
     } catch (IOException e) {
@@ -47,20 +47,20 @@ public class ApacheHttpClient implements HttpClient {
 
   public static class Builder {
 
-    private final CloseableHttpClientInitializer clientInitializer = new CloseableHttpClientInitializer();
+    private final HttpClientCreator httpClientCreator = new HttpClientCreator();
 
     public Builder setProxy(URI uri) {
-      clientInitializer.setProxy(uri);
+      httpClientCreator.setProxy(uri);
       return this;
     }
 
     public Builder trustAll() {
-      clientInitializer.trustAll();
+      httpClientCreator.trustAll();
       return this;
     }
 
     public ApacheHttpClient build() {
-      return new ApacheHttpClient(clientInitializer);
+      return new ApacheHttpClient(httpClientCreator);
     }
 
   }
