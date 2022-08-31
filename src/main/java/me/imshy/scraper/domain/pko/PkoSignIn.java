@@ -7,7 +7,7 @@ import me.imshy.scraper.domain.http.exception.signIn.AccessBlocked;
 import me.imshy.scraper.domain.http.exception.signIn.InvalidCredentials;
 import me.imshy.scraper.domain.http.request.JsonPostRequest;
 import me.imshy.scraper.domain.http.request.Response;
-import me.imshy.scraper.domain.pko.http.Requests;
+import me.imshy.scraper.domain.pko.http.PkoRequests;
 
 public class PkoSignIn {
 
@@ -24,7 +24,7 @@ public class PkoSignIn {
   }
 
   private SessionAttributes enterLogin(String login) {
-    JsonPostRequest loginRequest = Requests.createLoginRequest(login);
+    JsonPostRequest loginRequest = PkoRequests.createLoginRequest(login);
     Response loginResponse = httpClient.fetch(loginRequest);
     assertLoginAccepted(loginResponse);
     return parseSessionAttributes(loginResponse);
@@ -50,7 +50,7 @@ public class PkoSignIn {
   }
 
   private void enterPassword(String password, SessionAttributes sessionAttributes) {
-    JsonPostRequest passwordRequest = Requests.createPasswordRequest(password, sessionAttributes);
+    JsonPostRequest passwordRequest = PkoRequests.createPasswordRequest(password, sessionAttributes);
     Response passwordResponse = httpClient.fetch(passwordRequest);
     assertSignedIn(passwordResponse);
   }

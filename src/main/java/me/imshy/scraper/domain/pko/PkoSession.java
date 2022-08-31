@@ -5,7 +5,7 @@ import me.imshy.scraper.domain.Account;
 import me.imshy.scraper.domain.http.HttpClient;
 import me.imshy.scraper.domain.http.request.JsonPostRequest;
 import me.imshy.scraper.domain.http.request.Response;
-import me.imshy.scraper.domain.pko.http.Requests;
+import me.imshy.scraper.domain.pko.http.PkoRequests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class PkoSession {
   }
 
   private Response executeInitRequest() {
-    JsonPostRequest initRequest = Requests.createInitRequest(sessionId);
+    JsonPostRequest initRequest = PkoRequests.createInitRequest(sessionId);
     return httpClient.fetch(initRequest);
   }
 

@@ -1,13 +1,12 @@
 package me.imshy.scraper.domain;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import me.imshy.scraper.domain.pko.http.PkoRequests;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 class PkoWireMock {
 
-  private static final String PKO_LOGIN_PATH = "/ipko3/login";
-  private static final String PKO_INIT_PATH = "/ipko3/init";
   private final Credentials CREDENTIALS;
 
   public PkoWireMock(Credentials credentials) {
@@ -19,8 +18,16 @@ class PkoWireMock {
         .willReturn(aResponse()
             .withStatus(200)
             .withHeader("Content-Type", "application/json")
-            .withHeader("X-Session-Id", "SESSION_ID")
+            .withHeader(PkoRequests.SESSION_ID_HEADER_NAME, "SESSION_ID")
             .withBody(ResponseJsonBodies.LOGIN_RESPONSE_BODY)));
+  }
+
+  private MappingBuilder matchLoginRequest() {
+    return post(urlPathEqualTo(PkoRequests.LOGIN_PATH))
+        .withScheme("https")
+        .withRequestBody(matchingJsonPath("$[?(@.action == \"submit\")]"))
+        .withRequestBody(matchingJsonPath("$[?(@.state_id == \"login\")]"))
+        .withRequestBody(matchingJsonPath("$.data[?(@.login == '" + CREDENTIALS.login() + "')]"));
   }
 
   void mockValidPassword() {
@@ -29,6 +36,16 @@ class PkoWireMock {
             .withStatus(200)
             .withHeader("Content-Type", "application/json")
             .withBody(ResponseJsonBodies.PASSWORD_RESPONSE_BODY)));
+  }
+
+  private MappingBuilder matchPasswordRequest() {
+    return post(urlPathEqualTo(PkoRequests.LOGIN_PATH))
+        .withScheme("https")
+        .withRequestBody(matchingJsonPath("$[?(@.action == \"submit\")]"))
+        .withRequestBody(matchingJsonPath("$[?(@.state_id == \"password\")]"))
+        .withRequestBody(matchingJsonPath("$[?(@.flow_id == \"FLOW_ID\")]"))
+        .withRequestBody(matchingJsonPath("$.data[?(@.password == '" + CREDENTIALS.password() + "')]"))
+        .withHeader(PkoRequests.SESSION_ID_HEADER_NAME, equalTo("SESSION_ID"));
   }
 
   void mockInit() {
@@ -40,19 +57,11 @@ class PkoWireMock {
   }
 
   private MappingBuilder matchInitRequest() {
-    return post(urlPathEqualTo(PKO_INIT_PATH))
+    return post(urlPathEqualTo(PkoRequests.INIT_PATH))
         .withScheme("https")
         .withRequestBody(matchingJsonPath("$.data[?(@.account_ids)]"))
         .withRequestBody(matchingJsonPath("$.data[?(@.accounts)]"))
         .withHeader("X-Session-Id", equalTo("SESSION_ID"));
-  }
-
-  void mockInvalidPassword() {
-    givenThat(matchPasswordRequest()
-        .willReturn(aResponse()
-            .withStatus(200)
-            .withHeader("Content-Type", "application/json")
-            .withBody(ResponseJsonBodies.INVALID_PASSWORD_RESPONSE_BODY)));
   }
 
   void mockLoginCaptcha() {
@@ -64,12 +73,12 @@ class PkoWireMock {
             .withBody(ResponseJsonBodies.CAPTCHA_LOGIN_RESPONSE_BODY)));
   }
 
-  private MappingBuilder matchLoginRequest() {
-    return post(urlPathEqualTo(PKO_LOGIN_PATH))
-        .withScheme("https")
-        .withRequestBody(matchingJsonPath("$[?(@.action == \"submit\")]"))
-        .withRequestBody(matchingJsonPath("$[?(@.state_id == \"login\")]"))
-        .withRequestBody(matchingJsonPath("$.data[?(@.login == '" + CREDENTIALS.login() + "')]"));
+  void mockInvalidPassword() {
+    givenThat(matchPasswordRequest()
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withBody(ResponseJsonBodies.INVALID_PASSWORD_RESPONSE_BODY)));
   }
 
   void mockAccountBlocked() {
@@ -79,16 +88,6 @@ class PkoWireMock {
             .withHeader("Content-Type", "application/json")
             .withHeader("X-Session-Id", "SESSION_ID")
             .withBody(ResponseJsonBodies.ACCESS_BLOCKED_PASSWORD_RESPONSE_BODY)));
-  }
-
-  private MappingBuilder matchPasswordRequest() {
-    return post(urlPathEqualTo(PKO_LOGIN_PATH))
-        .withScheme("https")
-        .withRequestBody(matchingJsonPath("$[?(@.action == \"submit\")]"))
-        .withRequestBody(matchingJsonPath("$[?(@.state_id == \"password\")]"))
-        .withRequestBody(matchingJsonPath("$[?(@.flow_id == \"FLOW_ID\")]"))
-        .withRequestBody(matchingJsonPath("$.data[?(@.password == '" + CREDENTIALS.password() + "')]"))
-        .withHeader("X-Session-Id", equalTo("SESSION_ID"));
   }
 
   private static class ResponseJsonBodies {

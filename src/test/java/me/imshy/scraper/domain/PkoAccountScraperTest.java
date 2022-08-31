@@ -33,6 +33,16 @@ class PkoAccountScraperTest {
   }
 
   @Test
+  void importAccountsAccessBlockedCaptcha(WireMockRuntimeInfo wireMockRuntimeInfo) {
+    var pkoAccountScraper = createTestScraperWithProxy(wireMockRuntimeInfo.getHttpsBaseUrl());
+    pkoWireMock.mockLoginCaptcha();
+
+    Assertions.assertThatThrownBy(() -> pkoAccountScraper.importAccounts(CREDENTIALS))
+        .isInstanceOf(AccessBlocked.class);
+    Assertions.assertThat(WireMock.findUnmatchedRequests()).isEmpty();
+  }
+
+  @Test
   void importAccountsInvalidCredentials(WireMockRuntimeInfo wireMockRuntimeInfo) {
     var pkoAccountScraper = createTestScraperWithProxy(wireMockRuntimeInfo.getHttpsBaseUrl());
     pkoWireMock.mockValidLogin();
@@ -40,16 +50,6 @@ class PkoAccountScraperTest {
 
     Assertions.assertThatThrownBy(() -> pkoAccountScraper.importAccounts(CREDENTIALS))
         .isInstanceOf(InvalidCredentials.class);
-    Assertions.assertThat(WireMock.findUnmatchedRequests()).isEmpty();
-  }
-
-  @Test
-  void importAccountsAccessBlockedCaptcha(WireMockRuntimeInfo wireMockRuntimeInfo) {
-    var pkoAccountScraper = createTestScraperWithProxy(wireMockRuntimeInfo.getHttpsBaseUrl());
-    pkoWireMock.mockLoginCaptcha();
-
-    Assertions.assertThatThrownBy(() -> pkoAccountScraper.importAccounts(CREDENTIALS))
-        .isInstanceOf(AccessBlocked.class);
     Assertions.assertThat(WireMock.findUnmatchedRequests()).isEmpty();
   }
 
