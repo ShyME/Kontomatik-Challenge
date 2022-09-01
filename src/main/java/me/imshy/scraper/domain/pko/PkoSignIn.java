@@ -35,7 +35,7 @@ public class PkoSignIn {
     if (stateId.equals("captcha")) {
       throw new AccessBlocked("Captcha needed");
     } else if (!stateId.equals("password")) {
-      throw new RuntimeException("PKO login request unsuccessful");
+      throw new InvalidCredentials("Invalid Credentials");
     }
   }
 
