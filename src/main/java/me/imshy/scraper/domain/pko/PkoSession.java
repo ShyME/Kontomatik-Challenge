@@ -3,13 +3,12 @@ package me.imshy.scraper.domain.pko;
 import com.fasterxml.jackson.databind.JsonNode;
 import me.imshy.scraper.domain.Account;
 import me.imshy.scraper.domain.http.HttpClient;
-import me.imshy.scraper.domain.http.request.JsonPostRequest;
-import me.imshy.scraper.domain.http.request.Response;
+import me.imshy.scraper.domain.http.JsonPostRequest;
+import me.imshy.scraper.domain.http.Response;
 import me.imshy.scraper.domain.pko.http.PkoRequests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class PkoSession {
@@ -35,9 +34,9 @@ public class PkoSession {
   private static List<Account> parseAccounts(Response initResponse) {
     JsonNode accountsJson = initResponse.toJson().get("response").get("data").get("accounts");
     List<Account> accounts = new ArrayList<>();
-    for (Iterator<JsonNode> it = accountsJson.elements(); it.hasNext(); ) {
-      accounts.add(deserializeAccountJson(it.next()));
-    }
+    accountsJson.elements().forEachRemaining(accountNode ->
+        accounts.add(deserializeAccountJson(accountNode))
+    );
     return accounts;
   }
 

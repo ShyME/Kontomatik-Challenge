@@ -1,4 +1,4 @@
-package me.imshy.scraper.domain.http.exception.signIn;
+package me.imshy.scraper.domain.exception;
 
 public class AccessBlocked extends RuntimeException {
 

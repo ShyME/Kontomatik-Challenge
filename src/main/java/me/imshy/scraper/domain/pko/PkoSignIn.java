@@ -2,11 +2,11 @@ package me.imshy.scraper.domain.pko;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import me.imshy.scraper.domain.Credentials;
+import me.imshy.scraper.domain.exception.AccessBlocked;
+import me.imshy.scraper.domain.exception.InvalidCredentials;
 import me.imshy.scraper.domain.http.HttpClient;
-import me.imshy.scraper.domain.http.exception.signIn.AccessBlocked;
-import me.imshy.scraper.domain.http.exception.signIn.InvalidCredentials;
-import me.imshy.scraper.domain.http.request.JsonPostRequest;
-import me.imshy.scraper.domain.http.request.Response;
+import me.imshy.scraper.domain.http.JsonPostRequest;
+import me.imshy.scraper.domain.http.Response;
 import me.imshy.scraper.domain.pko.http.PkoRequests;
 
 public class PkoSignIn {

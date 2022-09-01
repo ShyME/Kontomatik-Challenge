@@ -1,4 +1,4 @@
-package me.imshy.scraper.domain.http.request;
+package me.imshy.scraper.domain.http;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import me.imshy.scraper.infrastructure.json.JsonUtils;

@@ -1,4 +1,4 @@
-package me.imshy.scraper.domain.http.request;
+package me.imshy.scraper.domain.http;
 
 import me.imshy.scraper.infrastructure.json.JsonUtils;
 

@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import java.util.List;
-
 public class JsonUtils {
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -24,18 +22,6 @@ public class JsonUtils {
     try {
       return objectMapper.readTree(json);
     } catch (JsonProcessingException e) {
-      throw new RuntimeException(e.getCause());
-    }
-  }
-
-  public static List<JsonNode> findValuesByKey(String key, String json) {
-    try {
-      JsonNode root = objectMapper.readTree(json);
-      List<JsonNode> foundValues = root.findValues(key);
-      return foundValues.stream()
-          .filter(jsonNode -> !jsonNode.isNull())
-          .toList();
-    } catch (JsonProcessingException | NullPointerException e) {
       throw new RuntimeException(e.getCause());
     }
   }

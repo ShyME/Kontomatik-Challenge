@@ -1,4 +1,4 @@
-package me.imshy.scraper.domain.http.exception;
+package me.imshy.scraper.domain.http;
 
 public class HttpCodeError extends RuntimeException {
 

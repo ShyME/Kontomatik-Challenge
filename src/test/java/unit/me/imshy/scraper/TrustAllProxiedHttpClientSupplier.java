@@ -1,11 +1,9 @@
-package me.imshy.scraper.infrastructure.apache;
+package unit.me.imshy.scraper;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
-import org.apache.hc.client5.http.impl.routing.DefaultProxyRoutePlanner;
-import org.apache.hc.client5.http.routing.HttpRoutePlanner;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
@@ -18,38 +16,30 @@ import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.function.Supplier;
 
-class HttpClientCreator {
+public class TrustAllProxiedHttpClientSupplier implements Supplier<CloseableHttpClient> {
 
-  private HttpHost proxyHost;
-  private boolean trustAll = false;
+  private final HttpHost proxyHost;
 
-  void setProxy(URI uri) {
-    proxyHost = new HttpHost(uri.getScheme(), uri.getHost(), uri.getPort());
+  public TrustAllProxiedHttpClientSupplier(URI proxy) {
+    proxyHost = new HttpHost(proxy.getScheme(), proxy.getHost(), proxy.getPort());
   }
 
-  void trustAll() {
-    this.trustAll = true;
-  }
-
-  CloseableHttpClient createClient() {
+  @Override
+  public CloseableHttpClient get() {
     HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-    if (proxyHost != null) {
-      HttpRoutePlanner proxyRoutePlanner = new DefaultProxyRoutePlanner(proxyHost);
-      httpClientBuilder.setRoutePlanner(proxyRoutePlanner);
-    }
-    if (trustAll) {
-      httpClientBuilder.setConnectionManager(createAllTrustingConnectionManager());
-    }
+    httpClientBuilder.setProxy(proxyHost);
+    httpClientBuilder.setConnectionManager(createAllTrustingConnectionManager());
     return httpClientBuilder.build();
   }
 
   PoolingHttpClientConnectionManager createAllTrustingConnectionManager() {
     try {
-      final SSLContext sslcontext = SSLContexts.custom()
+      SSLContext sslcontext = SSLContexts.custom()
           .loadTrustMaterial(null, new TrustAllStrategy())
           .build();
-      final SSLConnectionSocketFactory sslSocketFactory = SSLConnectionSocketFactoryBuilder.create()
+      SSLConnectionSocketFactory sslSocketFactory = SSLConnectionSocketFactoryBuilder.create()
           .setSslContext(sslcontext)
           .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
           .build();
@@ -60,5 +50,4 @@ class HttpClientCreator {
       throw new RuntimeException(e);
     }
   }
-
 }

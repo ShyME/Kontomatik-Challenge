@@ -1,7 +1,7 @@
 package me.imshy.scraper.infrastructure.apache;
 
-import me.imshy.scraper.domain.http.request.JsonPostRequest;
-import me.imshy.scraper.domain.http.request.Response;
+import me.imshy.scraper.domain.http.JsonPostRequest;
+import me.imshy.scraper.domain.http.Response;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.Header;

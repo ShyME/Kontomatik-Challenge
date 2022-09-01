@@ -66,7 +66,7 @@
                 <version>2.22.0</version>
                 <configuration>
                     <includes>
-                        <include>me.imshy.scraper.domain.PkoAccountScraperTest</include>
+                        <include>unit.**</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -76,7 +76,7 @@
                 <version>2.22.0</version>
                 <configuration>
                     <includes>
-                        <include>me.imshy.scraper.ApplicationTest</include>
+                        <include>integration.**</include>
                     </includes>
                 </configuration>
             </plugin>
