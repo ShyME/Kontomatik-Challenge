@@ -18,7 +18,8 @@ class ApplicationTest {
 
   @Test
   void invalidCredentials() {
-    StdIOStub.input(new Credentials("login", "badPassword"));
+    Credentials credentials = CredentialsFileReader.readCredentials();
+    StdIOStub.input(new Credentials(credentials.login(), "badPassword"));
     Assertions.assertThatThrownBy(Application::main)
         .isInstanceOf(InvalidCredentials.class);
   }
