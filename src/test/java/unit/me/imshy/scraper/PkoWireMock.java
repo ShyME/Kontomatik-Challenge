@@ -1,7 +1,10 @@
 package unit.me.imshy.scraper;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import me.imshy.scraper.domain.Account;
 import me.imshy.scraper.domain.Credentials;
+
+import java.math.BigDecimal;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
@@ -10,6 +13,7 @@ class PkoWireMock {
   private static final String LOGIN_PATH = "/ipko3/login";
   private static final String SESSION_ID_HEADER_NAME = "X-Session-Id";
   public static final Credentials CREDENTIALS = new Credentials("LOGIN", "PASSWORD");
+  public static final Account ACCOUNT = new Account("01234567890123456789012345", "PLN", new BigDecimal("1000.00"));
 
   static void mockSuccessfulImport() {
     mockValidLogin();
@@ -134,24 +138,26 @@ class PkoWireMock {
         .willReturn(aResponse()
             .withStatus(200)
             .withHeader("Content-Type", "application/json")
-            .withBody("""
-                {
-                  "httpStatus": 200,
-                  "response": {
-                    "data": {
-                      "accounts": {
-                        "ACCOUNT_ID": {
-                          "number": {
-                            "value": "01234567890123456789012345"
-                            },
-                          "currency": "PLN",
-                          "balance": "1000.00"
+            .withBody(String.format(
+                """
+                    {
+                      "httpStatus": 200,
+                      "response": {
+                        "data": {
+                          "accounts": {
+                            "ACCOUNT_ID": {
+                              "number": {
+                                "value": "%s"
+                                },
+                              "currency": "%s",
+                              "balance": "%s"
+                            }
+                          }
                         }
                       }
                     }
-                  }
-                }
-                """)));
+                    """
+                , ACCOUNT.accountNumber(), ACCOUNT.currency(), ACCOUNT.balance()))));
   }
 
   private static MappingBuilder matchInitRequest() {

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class ApplicationTest {
 
   @Test
-  void printAccounts() {
+  void scrapesAndPrintsAccounts() {
     StdIOStub.input(CredentialsFileReader.readCredentials());
     StdIOStub.around(Application::main);
     Assertions.assertThat(StdIOStub.getOutput())
@@ -17,9 +17,8 @@ class ApplicationTest {
   }
 
   @Test
-  void invalidCredentials() {
-    Credentials credentials = CredentialsFileReader.readCredentials();
-    StdIOStub.input(new Credentials(credentials.login(), "badPassword"));
+  void scrapesAndPrintsAccountsThrowsInvalidCredentials() {
+    StdIOStub.input(new Credentials("login", "badPassword"));
     Assertions.assertThatThrownBy(Application::main)
         .isInstanceOf(InvalidCredentials.class);
   }
