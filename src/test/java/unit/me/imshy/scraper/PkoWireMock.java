@@ -8,18 +8,53 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 class PkoWireMock {
 
   private static final String LOGIN_PATH = "/ipko3/login";
-  private static final String INIT_PATH = "/ipko3/init";
   private static final String SESSION_ID_HEADER_NAME = "X-Session-Id";
+  public static final Credentials CREDENTIALS = new Credentials("LOGIN", "PASSWORD");
 
-  public final Credentials CREDENTIALS = new Credentials("LOGIN", "PASSWORD");
-
-  void mockSuccessfulImport() {
+  static void mockSuccessfulImport() {
     mockValidLogin();
     mockValidPassword();
     mockInit();
   }
 
-  private void mockValidLogin() {
+  static void mockInvalidCredentials() {
+    mockValidLogin();
+    mockInvalidPassword();
+  }
+
+  static void mockAccessBlocked() {
+    mockValidLogin();
+    mockAccountBlocked();
+  }
+
+  static void mockLoginCaptcha() {
+    givenThat(matchLoginRequest()
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withHeader("X-Session-Id", "SESSION_ID")
+            .withBody("""
+                {
+                  "state_id": "captcha",
+                  "httpStatus": 200,
+                  "token": "TOKEN",
+                  "response": {
+                    "fields": {
+                      "errors": null,
+                      "image": {
+                        "errors": null
+                      }
+                    },
+                    "data": {
+                      "question": "Wybierz wszystkie obrazki, na których są ..."
+                    }
+                  },
+                  "flow_id": "FLOW_ID"
+                }
+                """)));
+  }
+
+  private static void mockValidLogin() {
     givenThat(matchLoginRequest()
         .willReturn(aResponse()
             .withStatus(200)
@@ -44,7 +79,7 @@ class PkoWireMock {
                 """)));
   }
 
-  private MappingBuilder matchLoginRequest() {
+  private static MappingBuilder matchLoginRequest() {
     return post(urlPathEqualTo(LOGIN_PATH))
         .withRequestBody(equalToJson("""
             {
@@ -57,7 +92,7 @@ class PkoWireMock {
             """));
   }
 
-  private void mockValidPassword() {
+  private static void mockValidPassword() {
     givenThat(matchPasswordRequest()
         .willReturn(aResponse()
             .withStatus(200)
@@ -78,7 +113,7 @@ class PkoWireMock {
                 """)));
   }
 
-  private MappingBuilder matchPasswordRequest() {
+  private static MappingBuilder matchPasswordRequest() {
     return post(urlPathEqualTo(LOGIN_PATH))
         .withRequestBody(equalToJson("""
             {
@@ -94,7 +129,7 @@ class PkoWireMock {
         .withHeader(SESSION_ID_HEADER_NAME, equalTo("SESSION_ID"));
   }
 
-  private void mockInit() {
+  private static void mockInit() {
     givenThat(matchInitRequest()
         .willReturn(aResponse()
             .withStatus(200)
@@ -119,8 +154,8 @@ class PkoWireMock {
                 """)));
   }
 
-  private MappingBuilder matchInitRequest() {
-    return post(urlPathEqualTo(INIT_PATH))
+  private static MappingBuilder matchInitRequest() {
+    return post(urlPathEqualTo("/ipko3/init"))
         .withRequestBody(equalToJson("""
             {
               "data" : {
@@ -132,12 +167,7 @@ class PkoWireMock {
         .withHeader("X-Session-Id", equalTo("SESSION_ID"));
   }
 
-  void mockInvalidCredentials() {
-    mockValidLogin();
-    mockInvalidPassword();
-  }
-
-  private void mockInvalidPassword() {
+  private static void mockInvalidPassword() {
     givenThat(matchPasswordRequest()
         .willReturn(aResponse()
             .withStatus(200)
@@ -162,12 +192,7 @@ class PkoWireMock {
                 """)));
   }
 
-  void mockAccessBlocked() {
-    mockValidLogin();
-    mockAccountBlocked();
-  }
-
-  private void mockAccountBlocked() {
+  private static void mockAccountBlocked() {
     givenThat(matchPasswordRequest()
         .willReturn(aResponse()
             .withStatus(200)
@@ -181,34 +206,6 @@ class PkoWireMock {
                   "token": "TOKEN",
                   "response": {},
                   "state_id": "blocked_channel"
-                }
-                """)));
-  }
-
-
-  void mockLoginCaptcha() {
-    givenThat(matchLoginRequest()
-        .willReturn(aResponse()
-            .withStatus(200)
-            .withHeader("Content-Type", "application/json")
-            .withHeader("X-Session-Id", "SESSION_ID")
-            .withBody("""
-                {
-                  "state_id": "captcha",
-                  "httpStatus": 200,
-                  "token": "TOKEN",
-                  "response": {
-                    "fields": {
-                      "errors": null,
-                      "image": {
-                        "errors": null
-                      }
-                    },
-                    "data": {
-                      "question": "Wybierz wszystkie obrazki, na których są ..."
-                    }
-                  },
-                  "flow_id": "FLOW_ID"
                 }
                 """)));
   }

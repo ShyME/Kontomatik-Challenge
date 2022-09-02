@@ -14,7 +14,7 @@ public class JsonUtils {
     try {
       return objectWriter.writeValueAsString(object);
     } catch (JsonProcessingException e) {
-      throw new RuntimeException(e.getCause());
+      throw new RuntimeException(e);
     }
   }
 
@@ -22,7 +22,7 @@ public class JsonUtils {
     try {
       return objectMapper.readTree(json);
     } catch (JsonProcessingException e) {
-      throw new RuntimeException(e.getCause());
+      throw new RuntimeException(e);
     }
   }
 

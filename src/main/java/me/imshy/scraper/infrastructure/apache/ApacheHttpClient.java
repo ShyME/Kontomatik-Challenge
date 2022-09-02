@@ -30,7 +30,7 @@ public class ApacheHttpClient implements HttpClient {
       CloseableHttpResponse response = client.execute(ApacheRequests.mapRequestToApache(jsonPostRequest));
       return handleResponse(response);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
