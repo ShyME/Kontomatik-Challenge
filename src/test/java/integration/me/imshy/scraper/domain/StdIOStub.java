@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class StdIOStub {
+
   private static final InputStream DEFAULT_SYSTEM_IN = System.in;
   private static final PrintStream DEFAULT_SYSTEM_OUT = System.out;
   private static InputStream inputStream;
@@ -13,7 +14,7 @@ public class StdIOStub {
 
   static void input(Credentials credentials) {
     String input = credentials.login() + System.getProperty("line.separator")
-        + credentials.password() + System.getProperty("line.separator");
+      + credentials.password() + System.getProperty("line.separator");
     inputStream = new ByteArrayInputStream(input.getBytes());
     System.setIn(inputStream);
   }

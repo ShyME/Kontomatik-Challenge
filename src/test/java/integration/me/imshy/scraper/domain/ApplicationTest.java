@@ -13,14 +13,14 @@ class ApplicationTest {
     StdIOStub.input(CredentialsFileReader.readCredentials());
     StdIOStub.around(Application::main);
     Assertions.assertThat(StdIOStub.getOutput())
-        .containsPattern("Account\\[accountNumber=\\d{26},\\s?currency=\\w+,\\sbalance=\\d+\\.\\d{2}]");
+      .containsPattern("Account\\[accountNumber=\\d{26},\\s?currency=\\w+,\\sbalance=\\d+\\.\\d{2}]");
   }
 
   @Test
   void scrapesAndPrintsAccountsThrowsInvalidCredentials() {
     StdIOStub.input(new Credentials("login", "badPassword"));
     Assertions.assertThatThrownBy(Application::main)
-        .isInstanceOf(InvalidCredentials.class);
+      .isInstanceOf(InvalidCredentials.class);
   }
 
 }

@@ -37,17 +37,18 @@ public class TrustAllProxiedHttpClientSupplier implements Supplier<CloseableHttp
   PoolingHttpClientConnectionManager createAllTrustingConnectionManager() {
     try {
       SSLContext sslcontext = SSLContexts.custom()
-          .loadTrustMaterial(null, new TrustAllStrategy())
-          .build();
+        .loadTrustMaterial(null, new TrustAllStrategy())
+        .build();
       SSLConnectionSocketFactory sslSocketFactory = SSLConnectionSocketFactoryBuilder.create()
-          .setSslContext(sslcontext)
-          .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-          .build();
+        .setSslContext(sslcontext)
+        .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+        .build();
       return PoolingHttpClientConnectionManagerBuilder.create()
-          .setSSLSocketFactory(sslSocketFactory)
-          .build();
+        .setSSLSocketFactory(sslSocketFactory)
+        .build();
     } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
       throw new RuntimeException(e);
     }
   }
+
 }

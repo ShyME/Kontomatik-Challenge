@@ -6,12 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public record JsonPostRequest(
-    String url,
-    Map<String, String> headers,
-    String body
+  String url,
+  Map<String, String> headers,
+  String body
 ) {
 
   public static class Builder {
+
     private final String url;
     private final Map<String, String> headers = new HashMap<>();
     private String body;
@@ -34,6 +35,7 @@ public record JsonPostRequest(
       headers.putAll(Map.of("Accept", "application/json", "Content-type", "application/json"));
       return new JsonPostRequest(this.url, this.headers, this.body);
     }
+
   }
 
 }

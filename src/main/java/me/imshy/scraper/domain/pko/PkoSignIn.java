@@ -43,9 +43,9 @@ public class PkoSignIn {
     String sessionId = loginResponse.headers().get("X-Session-Id");
     JsonNode loginJson = loginResponse.toJson();
     return new SessionAttributes(
-        sessionId,
-        loginJson.get("flow_id").textValue(),
-        loginJson.get("token").textValue()
+      sessionId,
+      loginJson.get("flow_id").textValue(),
+      loginJson.get("token").textValue()
     );
   }
 

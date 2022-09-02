@@ -12,22 +12,22 @@ public class PkoRequests {
 
   public static JsonPostRequest createLoginRequest(String login) {
     return new JsonPostRequest.Builder(LOGIN_URL)
-        .setBody(new LoginRequestBody(login))
-        .build();
+      .setBody(new LoginRequestBody(login))
+      .build();
   }
 
   public static JsonPostRequest createPasswordRequest(String password, SessionAttributes sessionAttributes) {
     return new JsonPostRequest.Builder(LOGIN_URL)
-        .setBody(new PasswordRequestBody(password, sessionAttributes.flowId(), sessionAttributes.token()))
-        .addHeader(SESSION_ID_HEADER_NAME, sessionAttributes.sessionId())
-        .build();
+      .setBody(new PasswordRequestBody(password, sessionAttributes.flowId(), sessionAttributes.token()))
+      .addHeader(SESSION_ID_HEADER_NAME, sessionAttributes.sessionId())
+      .build();
   }
 
   public static JsonPostRequest createInitRequest(String sessionId) {
     return new JsonPostRequest.Builder(INIT_URL)
-        .setBody(new InitRequestBody())
-        .addHeader(SESSION_ID_HEADER_NAME, sessionId)
-        .build();
+      .setBody(new InitRequestBody())
+      .addHeader(SESSION_ID_HEADER_NAME, sessionId)
+      .build();
   }
 
 }

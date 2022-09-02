@@ -35,7 +35,7 @@ public class PkoSession {
     JsonNode accountsJson = initResponse.toJson().get("response").get("data").get("accounts");
     List<Account> accounts = new ArrayList<>();
     accountsJson.elements().forEachRemaining(accountNode ->
-        accounts.add(deserializeAccountJson(accountNode))
+      accounts.add(deserializeAccountJson(accountNode))
     );
     return accounts;
   }

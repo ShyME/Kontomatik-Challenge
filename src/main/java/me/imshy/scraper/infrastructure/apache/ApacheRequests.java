@@ -30,9 +30,9 @@ class ApacheRequests {
     }
     String body = ApacheRequests.toString(httpResponse.getEntity());
     return new Response(
-        headerMap,
-        body,
-        httpResponse.getCode()
+      headerMap,
+      body,
+      httpResponse.getCode()
     );
   }
 

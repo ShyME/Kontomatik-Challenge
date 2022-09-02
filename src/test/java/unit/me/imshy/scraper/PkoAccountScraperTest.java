@@ -21,9 +21,9 @@ class PkoAccountScraperTest {
 
   @RegisterExtension
   private static final WireMockExtension wireMock = WireMockExtension.newInstance()
-      .options(wireMockConfig().dynamicHttpsPort())
-      .proxyMode(true)
-      .build();
+    .options(wireMockConfig().dynamicHttpsPort())
+    .proxyMode(true)
+    .build();
 
   @Test
   void importAccounts() {
@@ -38,7 +38,7 @@ class PkoAccountScraperTest {
     PkoAccountScraper pkoAccountScraper = createWireMockTestPkoScraper();
     PkoWireMock.mockInvalidCredentials();
     assertThatThrownBy(() -> pkoAccountScraper.importAccounts(PkoWireMock.CREDENTIALS))
-        .isInstanceOf(InvalidCredentials.class);
+      .isInstanceOf(InvalidCredentials.class);
   }
 
   @Test
@@ -46,7 +46,7 @@ class PkoAccountScraperTest {
     PkoAccountScraper pkoAccountScraper = createWireMockTestPkoScraper();
     PkoWireMock.mockAccessBlocked();
     assertThatThrownBy(() -> pkoAccountScraper.importAccounts(PkoWireMock.CREDENTIALS))
-        .isInstanceOf(AccessBlocked.class);
+      .isInstanceOf(AccessBlocked.class);
   }
 
   @Test
@@ -54,15 +54,15 @@ class PkoAccountScraperTest {
     PkoAccountScraper pkoAccountScraper = createWireMockTestPkoScraper();
     PkoWireMock.mockLoginCaptcha();
     assertThatThrownBy(() -> pkoAccountScraper.importAccounts(PkoWireMock.CREDENTIALS))
-        .isInstanceOf(AccessBlocked.class);
+      .isInstanceOf(AccessBlocked.class);
   }
 
   private static PkoAccountScraper createWireMockTestPkoScraper() {
     WireMockRuntimeInfo wireMockRuntimeInfo = wireMock.getRuntimeInfo();
     return new PkoAccountScraper(
-        new ApacheHttpClient(
-            new TrustAllProxiedHttpClientSupplier(URI.create(wireMockRuntimeInfo.getHttpsBaseUrl()))
-        )
+      new ApacheHttpClient(
+        new TrustAllProxiedHttpClientSupplier(URI.create(wireMockRuntimeInfo.getHttpsBaseUrl()))
+      )
     );
   }
 

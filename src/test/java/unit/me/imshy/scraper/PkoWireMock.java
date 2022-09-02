@@ -33,187 +33,187 @@ class PkoWireMock {
 
   static void mockLoginCaptcha() {
     givenThat(matchLoginRequest()
-        .willReturn(aResponse()
-            .withStatus(200)
-            .withHeader("Content-Type", "application/json")
-            .withHeader("X-Session-Id", "SESSION_ID")
-            .withBody("""
-                {
-                  "state_id": "captcha",
-                  "httpStatus": 200,
-                  "token": "TOKEN",
-                  "response": {
-                    "fields": {
-                      "errors": null,
-                      "image": {
-                        "errors": null
-                      }
-                    },
-                    "data": {
-                      "question": "Wybierz wszystkie obrazki, na których są ..."
-                    }
-                  },
-                  "flow_id": "FLOW_ID"
+      .willReturn(aResponse()
+        .withStatus(200)
+        .withHeader("Content-Type", "application/json")
+        .withHeader("X-Session-Id", "SESSION_ID")
+        .withBody("""
+          {
+            "state_id": "captcha",
+            "httpStatus": 200,
+            "token": "TOKEN",
+            "response": {
+              "fields": {
+                "errors": null,
+                "image": {
+                  "errors": null
                 }
-                """)));
+              },
+              "data": {
+                "question": "Wybierz wszystkie obrazki, na których są ..."
+              }
+            },
+            "flow_id": "FLOW_ID"
+          }
+          """)));
   }
 
   private static void mockValidLogin() {
     givenThat(matchLoginRequest()
-        .willReturn(aResponse()
-            .withStatus(200)
-            .withHeader("Content-Type", "application/json")
-            .withHeader(SESSION_ID_HEADER_NAME, "SESSION_ID")
-            .withBody("""
-                {
-                  "httpStatus": 200,
-                  "response": {
-                    "fields": {
-                      "password": {
-                        "value": null,
-                        "errors": null
-                      },
-                      "errors": null
-                    }
-                  },
-                  "flow_id": "FLOW_ID",
-                  "state_id": "password",
-                  "token": "TOKEN"
-                }
-                """)));
+      .willReturn(aResponse()
+        .withStatus(200)
+        .withHeader("Content-Type", "application/json")
+        .withHeader(SESSION_ID_HEADER_NAME, "SESSION_ID")
+        .withBody("""
+          {
+            "httpStatus": 200,
+            "response": {
+              "fields": {
+                "password": {
+                  "value": null,
+                  "errors": null
+                },
+                "errors": null
+              }
+            },
+            "flow_id": "FLOW_ID",
+            "state_id": "password",
+            "token": "TOKEN"
+          }
+          """)));
   }
 
   private static MappingBuilder matchLoginRequest() {
     return post(urlPathEqualTo(LOGIN_PATH))
-        .withRequestBody(equalToJson("""
-            {
-              "data" : {
-                "login" : "LOGIN"
-              },
-              "action" : "submit",
-              "state_id" : "login"
-            }
-            """));
+      .withRequestBody(equalToJson("""
+        {
+          "data" : {
+            "login" : "LOGIN"
+          },
+          "action" : "submit",
+          "state_id" : "login"
+        }
+        """));
   }
 
   private static void mockValidPassword() {
     givenThat(matchPasswordRequest()
-        .willReturn(aResponse()
-            .withStatus(200)
-            .withHeader("Content-Type", "application/json")
-            .withBody("""
-                {
-                  "httpStatus": 200,
-                  "flow_id": "FLOW_ID",
-                  "state_id": "END",
-                  "token": "TOKEN",
-                  "finished": true,
-                  "response": {
-                    "data": {
-                      "login_type": "NORMAL"
-                    }
-                  }
-                }
-                """)));
+      .willReturn(aResponse()
+        .withStatus(200)
+        .withHeader("Content-Type", "application/json")
+        .withBody("""
+          {
+            "httpStatus": 200,
+            "flow_id": "FLOW_ID",
+            "state_id": "END",
+            "token": "TOKEN",
+            "finished": true,
+            "response": {
+              "data": {
+                "login_type": "NORMAL"
+              }
+            }
+          }
+          """)));
   }
 
   private static MappingBuilder matchPasswordRequest() {
     return post(urlPathEqualTo(LOGIN_PATH))
-        .withRequestBody(equalToJson("""
-            {
-              "data": {
-                "password" : "PASSWORD"
-              },
-              "action" : "submit",
-              "token" : "TOKEN",
-              "state_id" : "password",
-              "flow_id" : "FLOW_ID"
-            }
-            """))
-        .withHeader(SESSION_ID_HEADER_NAME, equalTo("SESSION_ID"));
+      .withRequestBody(equalToJson("""
+        {
+          "data": {
+            "password" : "PASSWORD"
+          },
+          "action" : "submit",
+          "token" : "TOKEN",
+          "state_id" : "password",
+          "flow_id" : "FLOW_ID"
+        }
+        """))
+      .withHeader(SESSION_ID_HEADER_NAME, equalTo("SESSION_ID"));
   }
 
   private static void mockInit() {
     givenThat(matchInitRequest()
-        .willReturn(aResponse()
-            .withStatus(200)
-            .withHeader("Content-Type", "application/json")
-            .withBody(String.format(
-                """
-                    {
-                      "httpStatus": 200,
-                      "response": {
-                        "data": {
-                          "accounts": {
-                            "ACCOUNT_ID": {
-                              "number": {
-                                "value": "%s"
-                                },
-                              "currency": "%s",
-                              "balance": "%s"
-                            }
-                          }
-                        }
-                      }
+      .willReturn(aResponse()
+        .withStatus(200)
+        .withHeader("Content-Type", "application/json")
+        .withBody(String.format(
+          """
+            {
+              "httpStatus": 200,
+              "response": {
+                "data": {
+                  "accounts": {
+                    "ACCOUNT_ID": {
+                      "number": {
+                        "value": "%s"
+                        },
+                      "currency": "%s",
+                      "balance": "%s"
                     }
-                    """
-                , ACCOUNT.accountNumber(), ACCOUNT.currency(), ACCOUNT.balance()))));
+                  }
+                }
+              }
+            }
+            """
+          , ACCOUNT.accountNumber(), ACCOUNT.currency(), ACCOUNT.balance()))));
   }
 
   private static MappingBuilder matchInitRequest() {
     return post(urlPathEqualTo("/ipko3/init"))
-        .withRequestBody(equalToJson("""
-            {
-              "data" : {
-                "account_ids" : { },
-                "accounts" : { }
-              }
-            }
-            """))
-        .withHeader("X-Session-Id", equalTo("SESSION_ID"));
+      .withRequestBody(equalToJson("""
+        {
+          "data" : {
+            "account_ids" : { },
+            "accounts" : { }
+          }
+        }
+        """))
+      .withHeader("X-Session-Id", equalTo("SESSION_ID"));
   }
 
   private static void mockInvalidPassword() {
     givenThat(matchPasswordRequest()
-        .willReturn(aResponse()
-            .withStatus(200)
-            .withHeader("Content-Type", "application/json")
-            .withBody("""
-                {
-                  "httpStatus": 200,
-                  "response": {
-                    "fields": {
-                      "login": {
-                        "errors": null
-                      },
-                      "errors": {
-                        "description": "Nieudane logowanie. Aby chronić Twoje finanse, zablokujemy dostęp do iPKO po kilku nieudanych próbach logowania. Nie pamiętasz hasła? Skorzystaj z opcji \\"Odzyskaj hasło\\" podczas logowania"
-                      }
-                    }
-                  },
-                  "token": "TOKEN",
-                  "flow_id": "FLOW_ID",
-                  "state_id": "login"
+      .willReturn(aResponse()
+        .withStatus(200)
+        .withHeader("Content-Type", "application/json")
+        .withBody("""
+          {
+            "httpStatus": 200,
+            "response": {
+              "fields": {
+                "login": {
+                  "errors": null
+                },
+                "errors": {
+                  "description": "Nieudane logowanie. Aby chronić Twoje finanse, zablokujemy dostęp do iPKO po kilku nieudanych próbach logowania. Nie pamiętasz hasła? Skorzystaj z opcji \\"Odzyskaj hasło\\" podczas logowania"
                 }
-                """)));
+              }
+            },
+            "token": "TOKEN",
+            "flow_id": "FLOW_ID",
+            "state_id": "login"
+          }
+          """)));
   }
 
   private static void mockAccountBlocked() {
     givenThat(matchPasswordRequest()
-        .willReturn(aResponse()
-            .withStatus(200)
-            .withHeader("Content-Type", "application/json")
-            .withHeader("X-Session-Id", "SESSION_ID")
-            .withBody("""
-                {
-                  "finished": true,
-                  "flow_id": "FLOW_ID",
-                  "httpStatus": 200,
-                  "token": "TOKEN",
-                  "response": {},
-                  "state_id": "blocked_channel"
-                }
-                """)));
+      .willReturn(aResponse()
+        .withStatus(200)
+        .withHeader("Content-Type", "application/json")
+        .withHeader("X-Session-Id", "SESSION_ID")
+        .withBody("""
+          {
+            "finished": true,
+            "flow_id": "FLOW_ID",
+            "httpStatus": 200,
+            "token": "TOKEN",
+            "response": {},
+            "state_id": "blocked_channel"
+          }
+          """)));
   }
 
 }
